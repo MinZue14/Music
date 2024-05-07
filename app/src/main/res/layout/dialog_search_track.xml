@@ -1,0 +1,60 @@
+<!-- dialog_search.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/edtAdminTrackID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ID bài hát"
+        android:inputType="textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
+        />
+
+    <EditText
+        android:id="@+id/edtAdminTrackName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tên bài hát"
+        android:inputType="textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
+        />
+
+    <EditText
+        android:id="@+id/edtAdminTrackArtist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ca sĩ"
+        android:inputType="textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
+        />
+
+    <Spinner
+        android:id="@+id/edtAdminTrackGenre"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_height="40dp"
+        android:layout_weight="1" />
+
+    <Spinner
+        android:id="@+id/edtAdminTrackCountry"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_height="40dp"
+        android:layout_weight="1" />
+
+    <EditText
+        android:id="@+id/edtAdminTrackView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Số lượt xem"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/edtAdminTrackReleaseDay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ngày phát hành"
+        android:inputType="textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
+        />
+</LinearLayout>

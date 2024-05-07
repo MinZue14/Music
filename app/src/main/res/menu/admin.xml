@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:icon="@drawable/baseline_person_24"
+        android:id="@+id/admin_user"
+        android:title="Quản Lý Người Dùng">
+    </item>
+
+    <item
+        android:icon="@drawable/baseline_musicnote"
+        android:id="@+id/admin_song"
+        android:title="Quản Lý Bài Hát">
+    </item>
+
+    <item
+        android:icon="@drawable/baseline_chart"
+        android:id="@+id/admin_chart"
+        android:title="Thống Kê">
+    </item>
+
+    <item
+        android:icon="@drawable/baseline_logout"
+        android:id="@+id/admin_logout"
+        android:title="Đăng Xuất">
+    </item>
+
+</menu>

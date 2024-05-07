@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/edtUserIdSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
+        android:hint="ID người dùng" />
+
+    <EditText
+        android:id="@+id/edtUsernameSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tên người dùng"
+        android:inputType="textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
+        />
+
+    <EditText
+        android:id="@+id/edtUserMailSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:inputType="textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
+        />
+
+    <EditText
+        android:id="@+id/edtUserPassSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mật khẩu"
+        android:inputType="textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
+        />
+
+</LinearLayout>

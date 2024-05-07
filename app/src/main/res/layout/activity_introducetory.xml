@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".IntroducetoryActivity">
+
+
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="match_parent"
+        android:layout_height="1000dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bkg_menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintCircleRadius="1000dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.007"></ImageView>
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="265dp"
+        android:layout_height="229dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/img"
+        app:layout_constraintVertical_bias="0.175"/>
+
+    <ImageView
+        android:id="@+id/introname"
+        android:layout_width="265dp"
+        android:layout_height="229dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/introname"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.41"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/img"
+        app:layout_constraintVertical_bias="0.435" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/splashCD"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/splashNote"
+        app:layout_constraintVertical_bias="0.587"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/splascd" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/splashNote"
+        android:layout_width="wrap_content"
+        android:layout_height="180dp"
+        android:layout_marginBottom="128dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo"
+        app:layout_constraintVertical_bias="0.317"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/splashnote" />
+</androidx.constraintlayout.widget.ConstraintLayout>
