@@ -5,15 +5,20 @@ import android.media.MediaPlayer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import java.util.Locale
 
 class TrackAdapter(var context:Activity, var dataList: List<Data>)
-    :RecyclerView.Adapter<TrackAdapter.MyViewHolder>() {
+    :RecyclerView.Adapter<TrackAdapter.MyViewHolder>(), Filterable {
+    private var filteredTrackList: List<Data> = dataList
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView = LayoutInflater.from(context).inflate(R.layout.layout_listtrack, parent, false)
@@ -69,5 +74,35 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
             imageButtonPause = itemView.findViewById(R.id.imageButtonPause)
         }
     }
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val filteredResults = mutableListOf<Data>()
+
+                if (constraint.isNullOrEmpty()) {
+                    filteredResults.addAll(dataList)
+                } else {
+                    val filterPattern = constraint.toString().toLowerCase(Locale.ROOT).trim()
+
+                    for (track in dataList) {
+                        if (track.title.toLowerCase(Locale.ROOT).contains(filterPattern)) {
+                            filteredResults.add(track)
+                        }
+                    }
+                }
+
+                val results = FilterResults()
+                results.values = filteredResults
+
+                return results
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                filteredTrackList = results?.values as List<Data>
+                notifyDataSetChanged()
+            }
+        }
+    }
+
 
 }

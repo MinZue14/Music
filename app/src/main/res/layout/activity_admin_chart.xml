@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".AdminActivity"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    tools:openDrawer="end">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,24 +30,40 @@
 
         </Toolbar>
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="20dp">
-
-            <TextView
+            android:layout_height="wrap_content">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Danh sách bài hát"
-                android:textSize="28sp"
-                android:gravity="center"
-                android:padding="20sp"/>
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="20dp">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Thống Kê"
+                    android:textSize="28sp"
+                    android:gravity="center"
+                    android:padding="20sp"/>
 
+                <com.github.mikephil.charting.charts.BarChart
+                    android:layout_width="match_parent"
+                    android:layout_height="500dp"
+                    android:layout_weight="1"
+                    android:id="@+id/barChart"
+                    android:layout_marginBottom="6dp"/>
 
-        </LinearLayout>
+                <com.github.mikephil.charting.charts.PieChart
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:layout_weight="1"
+                    android:id="@+id/pieChart"
+                    android:layout_marginBottom="6dp"/>
 
+            </LinearLayout>
+
+        </ScrollView>
     </LinearLayout>
 
     <!--menu-->

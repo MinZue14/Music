@@ -21,6 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class AdminTrackActivity : AppCompatActivity() {
     lateinit var binding:ActivityAdminTrackBinding
     lateinit var myRecycleView: RecyclerView
+    lateinit var searchView: SearchView
     lateinit var trackAdapter:TrackAdapter
 
 
@@ -80,6 +81,7 @@ class AdminTrackActivity : AppCompatActivity() {
 
 //main
         myRecycleView = findViewById(R.id.RecycleView)
+        searchView = findViewById(R.id.seachView)
 
         // Khởi tạo Retrofit
         val retrofitBuilder = Retrofit.Builder()
@@ -100,6 +102,16 @@ class AdminTrackActivity : AppCompatActivity() {
                 myRecycleView.adapter = trackAdapter
                 myRecycleView.layoutManager = LinearLayoutManager(this@AdminTrackActivity)
 
+                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String): Boolean {
+                        return false
+                    }
+
+                    override fun onQueryTextChange(newText: String): Boolean {
+                        trackAdapter.filter.filter(newText)
+                        return false
+                    }
+                })
 
                 Log.d("TAG", "onResponse: " + response.body())
             }

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".AdminActivity"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    tools:openDrawer="end">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,6 +44,16 @@
                 android:gravity="center"
                 android:padding="20sp"/>
 
+            <SearchView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_edittext"
+                android:queryHint="Tìm kiếm..."
+                android:id="@+id/seachView"
+                app:iconifiedByDefault="false"
+                android:inputType="text"
+                android:searchIcon="@drawable/baseline_search"
+                android:layout_marginBottom="10sp"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
