@@ -1,11 +1,9 @@
 package com.example.music
 
-import java.sql.Date
-import java.text.SimpleDateFormat
 import java.util.Locale
 
 data class Data(
-    val album: Album,
+    val album: String,
     val artist: Artist,
     val duration: Int,
     val explicit_content_cover: Int,

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".AdminActivity"
     android:fitsSystemWindows="true"
-    tools:openDrawer="end">
+    tools:openDrawer="start">
 
     <LinearLayout
         android:layout_width="match_parent"

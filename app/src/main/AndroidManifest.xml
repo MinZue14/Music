@@ -19,16 +19,13 @@
             android:exported="false" />
         <activity
             android:name=".AdminTrackActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:exported="false">
         </activity>
         <activity
             android:name=".IntroducetoryActivity"
-            android:exported="false"></activity>
+            android:exported="false">
+
+        </activity>
         <activity
             android:name=".AdminUserActivity"
             android:exported="false" />
@@ -49,7 +46,14 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
 
         <meta-data
             android:name="preloaded_fonts"
