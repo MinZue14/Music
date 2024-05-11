@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/menu"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="end">
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/users"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".MainActivity"
+android:fitsSystemWindows="true"
+tools:openDrawer="end">
 
 <LinearLayout
     android:layout_width="match_parent"
@@ -49,20 +50,8 @@
         </Toolbar>
 
         <!--Slideshow quảng cáo-->
-        <com.denzcoskun.imageslider.ImageSlider
-            android:id="@+id/imageSlider"
-            android:layout_width="match_parent"
-            android:layout_height="210dp"
-            app:iss_auto_cycle="true"
-            app:iss_delay="0"
-            app:iss_placeholder="#1AFFFFFF"
-            app:iss_error_image="#1AFFFFFF"
-            app:iss_corner_radius="5"
-            app:iss_period="1000"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
     </LinearLayout>
+</LinearLayout>
 
     <!--menu-->
     <com.google.android.material.navigation.NavigationView
@@ -72,6 +61,4 @@
         app:headerLayout="@layout/header_menu"
         app:menu="@menu/menu"
         android:layout_gravity="start"/>
-
-</LinearLayout>
 </androidx.drawerlayout.widget.DrawerLayout>

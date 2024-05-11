@@ -3,7 +3,7 @@ package com.example.music
 import java.util.Locale
 
 data class Data(
-    val album: String,
+    val album: Album,
     val artist: Artist,
     val duration: Int,
     val explicit_content_cover: Int,
