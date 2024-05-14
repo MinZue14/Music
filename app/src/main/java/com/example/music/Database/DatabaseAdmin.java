@@ -1,4 +1,4 @@
-package com.example.music;
+package com.example.music.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import androidx.annotation.Nullable;
+import com.example.music.Admin.Admin;
 
 public class DatabaseAdmin extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Admin_Database";

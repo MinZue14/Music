@@ -1,4 +1,4 @@
-package com.example.music
+package com.example.music.API
 
 data class MyData(
     val `data`: List<Data>,

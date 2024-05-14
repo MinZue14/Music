@@ -1,16 +1,14 @@
-package com.example.music
+package com.example.music.Admin
 
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.example.music.Database.DatabaseAdmin
+import com.example.music.User.MainActivity
 import com.example.music.databinding.ActivityAdminSignUpBinding
-import com.example.music.databinding.ActivitySignUpBinding
 
 class AdminSignUp : AppCompatActivity() {
 

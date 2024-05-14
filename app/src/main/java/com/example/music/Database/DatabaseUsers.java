@@ -1,10 +1,12 @@
-package com.example.music;
+package com.example.music.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.example.music.User.Users;
 
 import java.util.ArrayList;
 

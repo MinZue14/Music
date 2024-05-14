@@ -1,4 +1,4 @@
-package com.example.music;
+package com.example.music.User;
 
 public class Users {
     String userID, username, email, password;

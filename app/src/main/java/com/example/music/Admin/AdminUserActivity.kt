@@ -1,17 +1,20 @@
-package com.example.music
+package com.example.music.Admin
 
-import UserAdapter
+import com.example.music.Adapter.UserAdapter
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.example.music.Database.DatabaseUsers
+import com.example.music.R
+import com.example.music.User.Users
 import com.example.music.databinding.ActivityAdminUserBinding
 import com.example.music.databinding.HeaderMenuBinding
 import com.google.android.material.navigation.NavigationView
@@ -19,7 +22,7 @@ import com.google.android.material.navigation.NavigationView
 class AdminUserActivity : AppCompatActivity() {
     lateinit var binding: ActivityAdminUserBinding
     lateinit var listUser: ArrayList<Users>
-    lateinit var userAdapter:UserAdapter
+    lateinit var userAdapter: UserAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,7 +122,8 @@ class AdminUserActivity : AppCompatActivity() {
             alertDialog.setMessage("Bạn muốn xóa hay không ?")
             alertDialog.setPositiveButton("Có") { dialog, which ->
                 val user = listUser[position] // Lấy người dùng từ danh sách nguồn
-                val dbHelper = DatabaseUsers(this) // Khởi tạo đối tượng DatabaseUsers
+                val dbHelper =
+                    DatabaseUsers(this) // Khởi tạo đối tượng DatabaseUsers
                 val isDeleted = dbHelper.deleteUser(user) // Gọi phương thức deleteUser từ DatabaseUsers để xóa dữ liệu
 
                 if (isDeleted) {
@@ -187,8 +191,8 @@ class AdminUserActivity : AppCompatActivity() {
 
         userAdapter = UserAdapter(this, searchList)
         binding.listviewUser.adapter = userAdapter
-
-        showResultDialog("Tìm thấy ${searchList.size} kết quả")
+        Toast.makeText(applicationContext, "Tìm thấy ${searchList.size} kết quả", Toast.LENGTH_SHORT).show()
+//        showResultDialog("Tìm thấy ${searchList.size} kết quả")
     }
 
     private fun showResultDialog(message: String) {

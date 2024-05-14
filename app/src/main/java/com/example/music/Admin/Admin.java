@@ -1,4 +1,4 @@
-package com.example.music;
+package com.example.music.Admin;
 
 public class Admin {
     String adminName, adminPassword;

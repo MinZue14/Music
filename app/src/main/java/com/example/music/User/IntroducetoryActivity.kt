@@ -1,4 +1,4 @@
-package com.example.music
+package com.example.music.User
 
 import android.content.Intent
 import android.os.Bundle

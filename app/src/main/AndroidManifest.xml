@@ -15,37 +15,37 @@
         android:theme="@style/Theme.Music"
         tools:targetApi="31">
         <activity
-            android:name=".AdminChartActivity"
+            android:name=".Admin.AdminChartActivity"
             android:exported="false" />
         <activity
-            android:name=".AdminTrackActivity"
+            android:name=".Admin.AdminTrackActivity"
             android:exported="false">
         </activity>
         <activity
-            android:name=".IntroducetoryActivity"
+            android:name=".User.IntroducetoryActivity"
             android:exported="false">
 
         </activity>
         <activity
-            android:name=".AdminUserActivity"
+            android:name=".Admin.AdminUserActivity"
             android:exported="false" />
         <activity
-            android:name=".AdminActivity"
+            android:name=".Admin.AdminActivity"
             android:exported="false" />
         <activity
-            android:name=".AdminSignUp"
+            android:name=".Admin.AdminSignUp"
             android:exported="false" />
         <activity
-            android:name=".AdminLogin"
+            android:name=".Admin.AdminLogin"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".User.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUpActivity"
+            android:name=".User.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".User.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

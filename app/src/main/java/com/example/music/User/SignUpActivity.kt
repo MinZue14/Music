@@ -1,4 +1,4 @@
-package com.example.music
+package com.example.music.User
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.music.Database.DatabaseUsers
 import com.example.music.databinding.ActivitySignUpBinding
 
 

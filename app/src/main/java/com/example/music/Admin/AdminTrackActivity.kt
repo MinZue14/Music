@@ -1,4 +1,4 @@
-package com.example.music
+package com.example.music.Admin
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +9,10 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.music.API.ApiInterface
+import com.example.music.API.MyData
+import com.example.music.R
+import com.example.music.Adapter.TrackAdapter
 import com.example.music.databinding.ActivityAdminTrackBinding
 import com.example.music.databinding.HeaderMenuBinding
 import com.google.android.material.navigation.NavigationView
@@ -22,7 +26,7 @@ class AdminTrackActivity : AppCompatActivity() {
     lateinit var binding:ActivityAdminTrackBinding
     lateinit var myRecycleView: RecyclerView
     lateinit var searchView: SearchView
-    lateinit var trackAdapter:TrackAdapter
+    lateinit var trackAdapter: TrackAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,17 +105,6 @@ class AdminTrackActivity : AppCompatActivity() {
                 trackAdapter = TrackAdapter(this@AdminTrackActivity, dataList)
                 myRecycleView.adapter = trackAdapter
                 myRecycleView.layoutManager = LinearLayoutManager(this@AdminTrackActivity)
-
-                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                    override fun onQueryTextSubmit(query: String): Boolean {
-                        return false
-                    }
-
-                    override fun onQueryTextChange(newText: String): Boolean {
-                        trackAdapter.filter.filter(newText)
-                        return false
-                    }
-                })
 
                 Log.d("TAG", "onResponse: " + response.body())
             }

@@ -1,0 +1,23 @@
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="20sp"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:layout_width="90sp"
+        android:layout_height="90sp"
+        android:id="@+id/artistImage"
+        app:shapeAppearanceOverlay="@style/circle"
+        tools:srcCompat="@tools:sample/avatars"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/artistName"
+        android:textSize="20sp"
+        android:textStyle="italic"
+        android:layout_gravity="center"/>
+</LinearLayout>

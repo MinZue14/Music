@@ -1,6 +1,4 @@
-package com.example.music
-
-import java.util.Locale
+package com.example.music.API
 
 data class Data(
     val album: Album,
