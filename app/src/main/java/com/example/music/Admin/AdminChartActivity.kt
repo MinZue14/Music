@@ -6,8 +6,8 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.example.music.API.ApiInterface
-import com.example.music.API.MyData
+import com.example.music.ApiInterface
+import com.example.music.MyData
 import com.example.music.R
 import com.example.music.databinding.ActivityAdminChartBinding
 import com.example.music.databinding.HeaderMenuBinding
@@ -104,7 +104,7 @@ class AdminChartActivity : AppCompatActivity() {
             .create(ApiInterface::class.java)
 
         // Gọi API để lấy dữ liệu bài hát
-        val retrofitData = retrofitBuilder.getData("eminem")
+        val retrofitData = retrofitBuilder.getData("bts")
 
         retrofitData.enqueue(object : Callback<MyData?> {
             override fun onResponse(p0: Call<MyData?>, response: Response<MyData?>) {

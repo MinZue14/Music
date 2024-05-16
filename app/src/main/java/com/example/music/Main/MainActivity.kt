@@ -1,5 +1,7 @@
-package com.example.music.User
+package com.example.music.Main
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -12,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.denzcoskun.imageslider.ImageSlider
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
-import com.example.music.API.ApiInterface
-import com.example.music.API.MyData
+import com.example.music.ApiInterface
+import com.example.music.MyData
 import com.example.music.Adapter.TrackAdapter
 import com.example.music.Admin.AdminLogin
 import com.example.music.R
@@ -29,6 +31,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
+    lateinit var sharedPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,9 +45,12 @@ class MainActivity : AppCompatActivity() {
         val drawer = findViewById<DrawerLayout>(R.id.users)
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
 
-        // Lấy dữ liệu người dùng từ Intent
-        val username = intent.getStringExtra("username")
-        val email = intent.getStringExtra("email")
+        // Khởi tạo SharedPreferences
+        sharedPref = getSharedPreferences("user_data", Context.MODE_PRIVATE)
+
+        // Lấy thông tin người dùng từ SharedPreferences
+        val username = sharedPref.getString("username", "") ?: ""
+        val email = sharedPref.getString("email", "") ?: ""
 
         // Gán headerLayoutBinding cho navigationView menu
         val headerLayoutBinding = HeaderMenuBinding.bind(navigationView.getHeaderView(0))
@@ -61,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.navListLiked -> {
-                    val intent = Intent(this, MainActivity::class.java)
+                    val intent = Intent(this, UserFavoriteListActivity::class.java)
                     startActivity(intent)
                     true
                 }
@@ -119,7 +125,7 @@ class MainActivity : AppCompatActivity() {
             .create(ApiInterface::class.java)
 
         // Gọi API để lấy dữ liệu bài hát
-        val retrofitData = retrofitBuilder.getData("eminem")
+        val retrofitData = retrofitBuilder.getData("bts")
 
         retrofitData.enqueue(object : Callback<MyData?> {
             override fun onResponse(p0: Call<MyData?>, response: Response<MyData?>) {
@@ -136,9 +142,9 @@ class MainActivity : AppCompatActivity() {
                 // Tạo SlideModel cho mỗi bài hát trong danh sách dữ liệu của bạn
                 for (data in dataList) {
                     if (itemCount < 5) { // Chỉ thêm 5 bài hát vào danh sách
-                        val slideModel = SlideModel(data.album.cover.toUri().toString())
+                        val slideModel = SlideModel(data.album.cover_big.toUri().toString())
                         slideModel.title = "Cùng tận hưởng âm nhạc của " + data.artist.name
-                        slideModel.imageUrl = data.album.cover.toUri().toString()
+                        slideModel.imageUrl = data.album.cover_big.toUri().toString()
                         slideModels.add(slideModel)
                         itemCount++
                     } else {
@@ -149,7 +155,7 @@ class MainActivity : AppCompatActivity() {
                 // Đặt danh sách SlideModel vào ImageSlider
                 imageSlider.setImageList(slideModels, ScaleTypes.FIT)
 
-// SLIDE CA SĨ
+// LIST CA SĨ
                 // Khởi tạo RecyclerView và Adapter
                 val artistList = findViewById<RecyclerView>(R.id.artistList)
                 val adapter = TrackAdapter.SlideAdapter(this@MainActivity, dataList)
@@ -160,7 +166,7 @@ class MainActivity : AppCompatActivity() {
                 // Thiết lập Adapter cho RecyclerView
                 artistList.adapter = adapter
 
-// SLIDE ALBUM
+// LIST ALBUM
                 // Khởi tạo RecyclerView và Adapter
                 val albumList = findViewById<RecyclerView>(R.id.albumList)
                 val adapter1 = TrackAdapter.AlbumAdapter(this@MainActivity, dataList)
@@ -192,7 +198,48 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-    }
+        // Gọi API để lấy dữ liệu bài hát
+        val retrofitData1 = retrofitBuilder.getData("blackpink")
+
+        retrofitData1.enqueue(object : Callback<MyData?> {
+            override fun onResponse(p0: Call<MyData?>, p1: Response<MyData?>) {
+                // Nếu cuộc gọi API thành công thì phương thức này được thực thi
+                val dataList = p1.body()?.data!!
+// LIST ALBUM
+                // Khởi tạo RecyclerView và Adapter
+                val albumList1 = findViewById<RecyclerView>(R.id.albumList1)
+                val adapter1 = TrackAdapter.AlbumAdapter(this@MainActivity, dataList)
+
+                // Thiết lập LayoutManager cho RecyclerView
+                val layoutManager = GridLayoutManager(this@MainActivity, 2, RecyclerView.VERTICAL, false)
+                albumList1.layoutManager = layoutManager
+
+                // Thiết lập Adapter cho RecyclerView
+                albumList1.adapter = adapter1
+
+// LIST NHẠC
+                // Khởi tạo RecyclerView và Adapter
+                val trackList1 = findViewById<RecyclerView>(R.id.trackList1)
+                val adapter2 = TrackAdapter.trackListAdapter(this@MainActivity, dataList)
+
+                // Thiết lập LayoutManager cho RecyclerView
+                trackList1.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
+
+                // Thiết lập Adapter cho RecyclerView
+                trackList1.adapter = adapter2
+
+                Log.d("TAG", "onResponse: " + p1.body())
+            }
+
+
+            override fun onFailure(p0: Call<MyData?>, p1: Throwable) {
+//                If the Api call is a failure then this method is executed
+                Log.d("TAG", "onResponse: " + p1.message)
+            }
+
+        })
+
+        }
 
 
 }

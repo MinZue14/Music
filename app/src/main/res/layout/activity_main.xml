@@ -56,7 +56,7 @@
             <!--Slideshow quảng cáo-->
             <com.denzcoskun.imageslider.ImageSlider
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
+                android:layout_height="270dp"
                 android:id="@+id/imageSlider"
                 app:iss_auto_cycle="true"
                 app:iss_delay="0"
@@ -123,6 +123,53 @@
                     android:orientation="horizontal"/>
             </LinearLayout>
 
+            <!--list album 1-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="720dp"
+                android:orientation="vertical"
+                android:padding="20sp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vừa Nghe Vừa Chill"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:paddingBottom="10sp"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/albumList1"
+                    android:orientation="horizontal"/>
+            </LinearLayout>
+
+            <!--list nhạc 1-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="720dp"
+                android:orientation="vertical"
+                android:padding="20sp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tháng Ngày Tận Hưởng"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:paddingBottom="10sp"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/trackList1"
+                    android:orientation="horizontal"/>
+            </LinearLayout>
+
+<!-- END TRANG-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#D3000000">
+
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

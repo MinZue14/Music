@@ -1,4 +1,4 @@
-package com.example.music.API
+package com.example.music
 
 data class Album(
     val cover: String,

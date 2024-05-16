@@ -7,7 +7,7 @@ import android.text.method.PasswordTransformationMethod
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.music.Database.DatabaseAdmin
-import com.example.music.User.MainActivity
+import com.example.music.Main.MainActivity
 import com.example.music.databinding.ActivityAdminSignUpBinding
 
 class AdminSignUp : AppCompatActivity() {

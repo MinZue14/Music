@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.music.User.Users;
+import com.example.music.Admin.Users;
 
 import java.util.ArrayList;
 

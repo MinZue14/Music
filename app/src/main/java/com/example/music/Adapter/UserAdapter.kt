@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.example.music.R
-import com.example.music.User.Users
+import com.example.music.Admin.Users
 
 class UserAdapter(context: Context, val listUser: ArrayList<Users>) :
     ArrayAdapter<Users>(context, 0, listUser) {

@@ -1,9 +1,12 @@
-package com.example.music.User
+package com.example.music.Main
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.music.Database.DatabaseUsers
@@ -13,6 +16,8 @@ class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
     lateinit var databaseUsers: DatabaseUsers
     var resultDialog: AlertDialog? = null
+    lateinit var sharedPreferences: SharedPreferences
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +26,9 @@ class LoginActivity : AppCompatActivity() {
         setContentView(view)
 
         databaseUsers = DatabaseUsers(this)
+        //Lưu dữ liệu người dùng vào SharedPreferences
+        sharedPreferences = getSharedPreferences("user_data", Context.MODE_PRIVATE)
+
 
         binding.loginBtn.setOnClickListener {
             val loginName = binding.loginName.text.toString()
@@ -31,12 +39,16 @@ class LoginActivity : AppCompatActivity() {
             } else {
                 val user = databaseUsers.checkPass(loginName, loginPass)
                 if (user != null) {
-                    showResultDialog("Đăng nhập thành công!")
+                    Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, MainActivity::class.java)
-                    //lưu dữ liệu acc
-                    intent.putExtra("user_name", user.getUsername());
-                    intent.putExtra("user_email", user.getEmail());
 
+                    // Lưu thông tin người dùng vào SharedPreferences
+                    with(sharedPreferences.edit()) {
+                        putString("userID", user.getUserID())
+                        putString("username", user.getUsername())
+                        putString("email", user.getEmail())
+                        apply()
+                    }
                     startActivity(intent)
                     finish()
                 } else {
