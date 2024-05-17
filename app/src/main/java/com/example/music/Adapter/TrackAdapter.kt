@@ -6,6 +6,8 @@ import android.media.MediaPlayer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -16,10 +18,11 @@ import com.example.music.Data
 import com.example.music.Database.DatabaseUserList
 import com.example.music.R
 import com.squareup.picasso.Picasso
+import java.util.Locale
 
 class TrackAdapter(var context:Activity, var dataList: List<Data>)
-    :RecyclerView.Adapter<TrackAdapter.MyViewHolder>() {
-
+    :RecyclerView.Adapter<TrackAdapter.MyViewHolder>(), Filterable {
+    private var dataListFull: List<Data> = ArrayList(dataList)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView =
             LayoutInflater.from(context).inflate(R.layout.admin_list_track, parent, false)
@@ -76,19 +79,95 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
         }
     }
 
+//    private var dataListFull: List<Data> = ArrayList(dataList)
+    private val trackFilter: Filter = object : Filter() {
+        override fun performFiltering(constraint: CharSequence?): FilterResults {
+            val filteredList = ArrayList<Data>()
+            if (constraint == null || constraint.isEmpty()) {
+                filteredList.addAll(dataListFull)
+            } else {
+                val filterPattern = constraint.toString().lowercase(Locale.getDefault()).trim()
+                for (item in dataListFull) {
+                    if (item.title.lowercase(Locale.getDefault()).contains(filterPattern) ||
+                        item.artist.name.lowercase(Locale.getDefault()).contains(filterPattern)
+                    ) {
+                        filteredList.add(item)
+                    }
+                }
+            }
+            val results = FilterResults()
+            results.values = filteredList
+            return results
+        }
+
+        override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+            dataList = results?.values as List<Data>
+            notifyDataSetChanged()
+        }
+    }
+    override fun getFilter(): Filter {
+        return trackFilter
+    }
     /////////////// list avatar artist /////////////////
     class SlideAdapter(var context: Activity, var dataList: List<Data>) :
-        RecyclerView.Adapter<SlideAdapter.SlideViewHolder>() {
+        RecyclerView.Adapter<SlideAdapter.SlideViewHolder>(), Filterable {
 
         // Khởi tạo một HashSet để lưu trữ các ID của nghệ sĩ đã xuất hiện
         private val artistIds = HashSet<Int>()
 
         // Danh sách dữ liệu đã lọc, mỗi ca sĩ chỉ xuất hiện một lần
         private val filteredDataList = ArrayList<Data>()
-
+        private var dataListFull: List<Data> = ArrayList(dataList)
         init {
             // Lọc dữ liệu khi khởi tạo Adapter
             filterData()
+        }
+        // Khai báo Filter để thực hiện việc lọc dữ liệu
+        private val slideFilter = object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val filteredList = ArrayList<Data>()
+                val  artistIds_ = HashSet<Int>()
+                if (constraint == null || constraint.isEmpty()) {
+                    for (item in dataListFull) {
+                        if (!artistIds_.contains(item.artist.id)) {
+                            filteredList.add(item)
+                            artistIds_.add(item.artist.id)
+                        }
+                    }
+//                    filteredList.addAll(filteredDataList)
+                } else {
+                    val filterPattern = constraint.toString().lowercase(Locale.getDefault()).trim()
+//                    for (item in dataListFull) {
+//                        if (item.artist.name.lowercase(Locale.getDefault()).contains(filterPattern)) {
+//                                filteredList.add(item)
+//
+//                        }
+//                    }
+                    val uniqueArtistNames = mutableSetOf<String>()  // Sử dụng Set để theo dõi các tên nghệ sĩ duy nhất
+
+                    for (item in dataListFull) {
+                        val artistNameLowercase = item.artist.name.lowercase(Locale.getDefault())
+                        if (artistNameLowercase.contains(filterPattern) && uniqueArtistNames.add(artistNameLowercase)) {
+                            // Chỉ thêm vào filteredList nếu artistName chưa có trong Set
+                            filteredList.add(item)
+                        }
+                    }
+                }
+                val results = FilterResults()
+                results.values = filteredList
+                return results
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                filteredDataList.clear()
+                filteredDataList.addAll(results?.values as List<Data>)
+                notifyDataSetChanged()
+
+            }
+        }
+
+        override fun getFilter(): Filter {
+            return slideFilter
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SlideViewHolder {
@@ -114,33 +193,67 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
         }
 
         // Phương thức này được sử dụng để lọc dữ liệu, chỉ lấy mỗi ca sĩ một lần
-        private fun filterData() {
+        fun filterData() {
             for (data in dataList) {
                 if (!artistIds.contains(data.artist.id)) {
                     filteredDataList.add(data)
                     artistIds.add(data.artist.id)
                 }
             }
+//            notifyDataSetChanged()
         }
 
         class SlideViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val artistImage: ImageView = itemView.findViewById(R.id.artistImage)
             val artistName: TextView = itemView.findViewById(R.id.artistName)
         }
+
     }
 
     /////////////// list album   /////////////////
     class AlbumAdapter(var context: Activity, var dataList: List<Data>) :
-        RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>() {
+        RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>(),Filterable {
         // Khởi tạo một HashSet để lưu trữ các ID của album đã xuất hiện
         private val albumIds = HashSet<Int>()
 
         // Danh sách dữ liệu đã lọc, mỗi ca sĩ chỉ xuất hiện một lần
         private val filteredDataList = ArrayList<Data>()
-
+        private var dataListFull: List<Data> = ArrayList(dataList)
         init {
             // Lọc dữ liệu khi khởi tạo Adapter
             filterData()
+        }
+
+
+        // Khai báo Filter để thực hiện việc lọc dữ liệu
+        private val albumFilter = object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val filteredList = ArrayList<Data>()
+                if (constraint == null || constraint.isEmpty()) {
+                    filteredList.addAll(dataListFull)
+                } else {
+                    val filterPattern = constraint.toString().lowercase(Locale.getDefault()).trim()
+                    for (item in dataListFull) {
+                        if (item.album.title.lowercase(Locale.getDefault()).contains(filterPattern)) {
+                            filteredList.add(item)
+                        }
+                    }
+                }
+                val results = FilterResults()
+                results.values = filteredList
+                return results
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                filteredDataList.clear()
+                filteredDataList.addAll(results?.values as List<Data>)
+                notifyDataSetChanged()
+
+            }
+        }
+
+        override fun getFilter(): Filter {
+            return albumFilter
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumViewHolder {
@@ -150,11 +263,12 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
         }
 
         override fun getItemCount(): Int {
-            return minOf(10, dataList.size)
+            return filteredDataList.size
+//            return minOf(10, dataList.size)
         }
 
         override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
-            val currentData = dataList[position]
+            val currentData = filteredDataList[position]
 
             holder.albumName.text = currentData.album.title
 
@@ -178,11 +292,12 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
             val albumImage: ImageView = itemView.findViewById(R.id.albumImage)
             val albumName: TextView = itemView.findViewById(R.id.albumName)
         }
+
     }
 
     /////////////// list nhạc /////////////////
     class trackListAdapter(var context: Activity, var dataList: List<Data>) :
-        RecyclerView.Adapter<trackListAdapter.trackListViewHolder>() {
+        RecyclerView.Adapter<trackListAdapter.trackListViewHolder>(),Filterable {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): trackListViewHolder {
             val itemView =
@@ -194,6 +309,36 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
             return minOf(10, dataList.size)
 
         }
+        private var dataListFull: List<Data> = ArrayList(dataList)
+        private val trackFilter: Filter = object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val filteredList = ArrayList<Data>()
+                if (constraint == null || constraint.isEmpty()) {
+                    filteredList.addAll(dataListFull)
+                } else {
+                    val filterPattern = constraint.toString().lowercase(Locale.getDefault()).trim()
+                    for (item in dataListFull) {
+                        if (item.title.lowercase(Locale.getDefault()).contains(filterPattern) ||
+                            item.artist.name.lowercase(Locale.getDefault()).contains(filterPattern)
+                        ) {
+                            filteredList.add(item)
+                        }
+                    }
+                }
+                val results = FilterResults()
+                results.values = filteredList
+                return results
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                dataList = results?.values as List<Data>
+                notifyDataSetChanged()
+            }
+        }
+        override fun getFilter(): Filter {
+            return trackFilter
+        }
+
 
         override fun onBindViewHolder(holder: trackListViewHolder, position: Int) {
             val currentData = dataList[position]
@@ -293,5 +438,8 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
                 imageButtonLove = itemView.findViewById(R.id.imageButtonLove)
             }
         }
+
     }
+
+
 }

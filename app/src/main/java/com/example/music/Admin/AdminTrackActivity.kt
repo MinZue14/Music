@@ -23,7 +23,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class AdminTrackActivity : AppCompatActivity() {
-    lateinit var binding:ActivityAdminTrackBinding
+    lateinit var binding: ActivityAdminTrackBinding
     lateinit var myRecycleView: RecyclerView
     lateinit var searchView: SearchView
     lateinit var trackAdapter: TrackAdapter
@@ -115,7 +115,27 @@ class AdminTrackActivity : AppCompatActivity() {
             }
         })
 
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // Implement search submit action if needed
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // Filter data as user types in the SearchView
+                trackAdapter.filter.filter(newText)
+                return true
+            }
+        })
+
     }
+
+//    private fun filterList(query: String?) {
+//        if(query != null){
+//            val filteredList = ArrayList<>()
+//
+//        }
+//    }
 
 
 }

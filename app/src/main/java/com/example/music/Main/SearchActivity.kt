@@ -1,4 +1,5 @@
 package com.example.music.Main
+
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -15,12 +16,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.denzcoskun.imageslider.ImageSlider
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
-import com.example.music.ApiInterface
-import com.example.music.MyData
 import com.example.music.Adapter.TrackAdapter
 import com.example.music.Admin.AdminLogin
+import com.example.music.ApiInterface
+import com.example.music.MyData
 import com.example.music.R
-import com.example.music.databinding.ActivityMainBinding
+import com.example.music.databinding.ActivitySearchBinding
 import com.example.music.databinding.HeaderMenuBinding
 import com.google.android.material.navigation.NavigationView
 import retrofit2.Call
@@ -29,15 +30,18 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-
-class MainActivity : AppCompatActivity() {
-    lateinit var binding: ActivityMainBinding
+class SearchActivity: AppCompatActivity() {
+    lateinit var binding: ActivitySearchBinding
     lateinit var sharedPref: SharedPreferences
     lateinit var searchView: SearchView
+//    lateinit var adapter : TrackAdapter.SlideAdapter
+//    lateinit var adapter1 : TrackAdapter.AlbumAdapter
+//    lateinit var adapter2 : TrackAdapter.trackListAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
@@ -113,20 +117,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        searchView = findViewById(R.id.search)
-
-        searchView.setOnClickListener{
-            val intent = Intent(this, SearchActivity::class.java)
-            startActivity(intent)
-            true
-        }
-
         // Xử lý sự kiện khi người dùng nhấn nút mở Drawer
         binding.btnOpenDrawer.setOnClickListener {
             drawer.openDrawer(GravityCompat.START)
         }
 
 //main
+        searchView = findViewById(R.id.search_)
         // Khởi tạo Retrofit
         val retrofitBuilder = Retrofit.Builder()
             .baseUrl("https://deezerdevs-deezer.p.rapidapi.com/")
@@ -142,47 +139,24 @@ class MainActivity : AppCompatActivity() {
                 // Nếu cuộc gọi API thành công thì phương thức này được thực thi
                 val dataList = response.body()?.data!!
 
-// SLIDE QUẢNG CÁO
-                val imageSlider = findViewById<ImageSlider>(R.id.imageSlider)
-                val slideModels = ArrayList<SlideModel>()
-
-                // Biến đếm số lượng bài hát đã thêm vào danh sách slideModels
-                var itemCount = 0
-
-                // Tạo SlideModel cho mỗi bài hát trong danh sách dữ liệu của bạn
-                for (data in dataList) {
-                    if (itemCount < 5) { // Chỉ thêm 5 bài hát vào danh sách
-                        val slideModel = SlideModel(data.album.cover_big.toUri().toString())
-                        slideModel.title = "Cùng tận hưởng âm nhạc của " + data.artist.name
-                        slideModel.imageUrl = data.album.cover_big.toUri().toString()
-                        slideModels.add(slideModel)
-                        itemCount++
-                    } else {
-                        break // Thoát khỏi vòng lặp nếu đã thêm đủ 5 bài hát
-                    }
-                }
-
-                // Đặt danh sách SlideModel vào ImageSlider
-                imageSlider.setImageList(slideModels, ScaleTypes.FIT)
-
 // LIST CA SĨ
                 // Khởi tạo RecyclerView và Adapter
-                val artistList = findViewById<RecyclerView>(R.id.artistList)
-                val adapter = TrackAdapter.SlideAdapter(this@MainActivity, dataList)
+                val artistList = findViewById<RecyclerView>(R.id.artistList_)
+                 val adapter = TrackAdapter.SlideAdapter(this@SearchActivity, dataList)
 
                 // Thiết lập LayoutManager cho RecyclerView
-                artistList.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
+                artistList.layoutManager = LinearLayoutManager(this@SearchActivity, LinearLayoutManager.HORIZONTAL, false)
 
                 // Thiết lập Adapter cho RecyclerView
                 artistList.adapter = adapter
 
 // LIST ALBUM
                 // Khởi tạo RecyclerView và Adapter
-                val albumList = findViewById<RecyclerView>(R.id.albumList)
-                val adapter1 = TrackAdapter.AlbumAdapter(this@MainActivity, dataList)
+                val albumList = findViewById<RecyclerView>(R.id.albumList_)
+                val adapter1 = TrackAdapter.AlbumAdapter(this@SearchActivity, dataList)
 
                 // Thiết lập LayoutManager cho RecyclerView
-                val layoutManager = GridLayoutManager(this@MainActivity, 2, RecyclerView.VERTICAL, false)
+                val layoutManager = GridLayoutManager(this@SearchActivity, 2, RecyclerView.VERTICAL, false)
                 albumList.layoutManager = layoutManager
 
                 // Thiết lập Adapter cho RecyclerView
@@ -190,16 +164,34 @@ class MainActivity : AppCompatActivity() {
 
 // LIST NHẠC
                 // Khởi tạo RecyclerView và Adapter
-                val trackList = findViewById<RecyclerView>(R.id.trackList)
-                val adapter2 = TrackAdapter.trackListAdapter(this@MainActivity, dataList)
+                val trackList = findViewById<RecyclerView>(R.id.trackList_)
+                val adapter2 = TrackAdapter.trackListAdapter(this@SearchActivity, dataList)
 
                 // Thiết lập LayoutManager cho RecyclerView
-                trackList.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
+                trackList.layoutManager = LinearLayoutManager(this@SearchActivity, LinearLayoutManager.VERTICAL, false)
 
                 // Thiết lập Adapter cho RecyclerView
                 trackList.adapter = adapter2
 
                 Log.d("TAG", "onResponse: " + response.body())
+                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        // Implement search submit action if needed
+                        return false
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        // Filter data as user types in the SearchView
+//                trackAdapter.filter.filter(newText)
+//                        adapter.filterData()
+                        adapter.filter.filter(newText)
+
+                adapter1.filter.filter(newText)
+                adapter2.filter.filter(newText)
+
+                        return true
+                    }
+                })
             }
 
             override fun onFailure(p0: Call<MyData?>, t: Throwable) {
@@ -207,49 +199,23 @@ class MainActivity : AppCompatActivity() {
                 Log.d("TAG", "onResponse: " + t.message)
             }
         })
-
-        // Gọi API để lấy dữ liệu bài hát
-        val retrofitData1 = retrofitBuilder.getData("blackpink")
-
-        retrofitData1.enqueue(object : Callback<MyData?> {
-            override fun onResponse(p0: Call<MyData?>, p1: Response<MyData?>) {
-                // Nếu cuộc gọi API thành công thì phương thức này được thực thi
-                val dataList = p1.body()?.data!!
-// LIST ALBUM
-                // Khởi tạo RecyclerView và Adapter
-                val albumList1 = findViewById<RecyclerView>(R.id.albumList1)
-                val adapter1 = TrackAdapter.AlbumAdapter(this@MainActivity, dataList)
-
-                // Thiết lập LayoutManager cho RecyclerView
-                val layoutManager = GridLayoutManager(this@MainActivity, 2, RecyclerView.VERTICAL, false)
-                albumList1.layoutManager = layoutManager
-
-                // Thiết lập Adapter cho RecyclerView
-                albumList1.adapter = adapter1
-
-// LIST NHẠC
-                // Khởi tạo RecyclerView và Adapter
-                val trackList1 = findViewById<RecyclerView>(R.id.trackList1)
-                val adapter2 = TrackAdapter.trackListAdapter(this@MainActivity, dataList)
-
-                // Thiết lập LayoutManager cho RecyclerView
-                trackList1.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
-
-                // Thiết lập Adapter cho RecyclerView
-                trackList1.adapter = adapter2
-
-                Log.d("TAG", "onResponse: " + p1.body())
-            }
-
-
-            override fun onFailure(p0: Call<MyData?>, p1: Throwable) {
-//                If the Api call is a failure then this method is executed
-                Log.d("TAG", "onResponse: " + p1.message)
-            }
-
-        })
-
-        }
+//        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+//            override fun onQueryTextSubmit(query: String?): Boolean {
+//                // Implement search submit action if needed
+//                return false
+//            }
+//
+//            override fun onQueryTextChange(newText: String?): Boolean {
+//                // Filter data as user types in the SearchView
+////                trackAdapter.filter.filter(newText)
+//                adapter.filter.filter(newText)
+////                adapter1.filter.filter(newText)
+////                adapter2.filter.filter(newText)
+//
+//                return true
+//            }
+//        })
+    }
 
 
 }

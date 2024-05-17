@@ -44,11 +44,11 @@
                     android:fontFamily="@font/aclonica"
                     android:text="Nanavibe Music Player"/>
             </Toolbar>
-            <com.google.android.material.navigation.NavigationView
+            <SearchView
                 android:id="@+id/search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:menu="@menu/search"
+
                 android:background="@drawable/custom_edittext"
                 android:layout_margin="20dp"
                 android:layout_gravity="start"/>
