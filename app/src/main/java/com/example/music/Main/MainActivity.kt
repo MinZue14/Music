@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.navChart -> {
-                    val intent = Intent(this, MainActivity::class.java)
+                    val intent = Intent(this, ChartActivity::class.java)
                     startActivity(intent)
                     true
                 }

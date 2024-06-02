@@ -5,21 +5,23 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.enableEdgeToEdge
+import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.music.Adapter.FavoriteListAdapter
-import com.example.music.Adapter.TrackAdapter
 import com.example.music.Admin.AdminLogin
 import com.example.music.ApiInterface
-import com.example.music.Database.DatabaseUserList
 import com.example.music.MyData
 import com.example.music.R
-import com.example.music.databinding.ActivityUserLoveListBinding
+import com.example.music.databinding.ActivityChartBinding
+import com.example.music.databinding.ActivityMusicBinding
 import com.example.music.databinding.HeaderMenuBinding
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.navigation.NavigationView
 import retrofit2.Call
 import retrofit2.Callback
@@ -27,17 +29,19 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class UserFavoriteListActivity : AppCompatActivity() {
-    lateinit var binding:ActivityUserLoveListBinding
+class ChartActivity : AppCompatActivity() {
+    lateinit var binding: ActivityChartBinding
     lateinit var sharedPref: SharedPreferences
-    lateinit var databaseUserList: DatabaseUserList // Khai báo biến databaseUserList
+    lateinit var searchView: SearchView
+    lateinit var barChart: BarChart
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivityUserLoveListBinding.inflate(layoutInflater)
+        binding = ActivityChartBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
 
 //menu
         // Khai báo drawerLayout và navigationView
@@ -48,8 +52,6 @@ class UserFavoriteListActivity : AppCompatActivity() {
         sharedPref = getSharedPreferences("user_data", Context.MODE_PRIVATE)
 
         // Lấy thông tin người dùng từ SharedPreferences
-        val userIDString = sharedPref.getString("userID", null)
-        val userID = userIDString?.toLongOrNull() ?: -1L // Chuyển đổi thành Long hoặc gán mặc định là -1L nếu không thành công
         val username = sharedPref.getString("username", "") ?: ""
         val email = sharedPref.getString("email", "") ?: ""
 
@@ -125,36 +127,60 @@ class UserFavoriteListActivity : AppCompatActivity() {
             .build()
             .create(ApiInterface::class.java)
 
-        // Khởi tạo databaseUserList
-        databaseUserList = DatabaseUserList(this) // Khởi tạo databaseUserList
+        // Gọi API để lấy dữ liệu bài hát
+        val retrofitData = retrofitBuilder.getData("bts")
 
-        // Lấy danh sách các ID bài hát yêu thích từ SQLite
-        val favoriteTrackIDs = databaseUserList.getUserFavoriteTracks(userID)
-
-//       Gọi API để lấy dữ liệu cho danh sách các bài hát yêu thích
-        val retrofitData = retrofitBuilder.getData(favoriteTrackIDs.joinToString(","))
+        barChart = findViewById(R.id.barChart)
 
         retrofitData.enqueue(object : Callback<MyData?> {
-            override fun onResponse(call: Call<MyData?>, response: Response<MyData?>) {
-                if (response.isSuccessful && response.body() != null) {
-                    val dataList = response.body()?.data
+            override fun onResponse(p0: Call<MyData?>, response: Response<MyData?>) {
+                // Nếu cuộc gọi API thành công thì phương thức này được thực thi
+                val dataList = response.body()?.data!!
 
-                    if (dataList != null) {
-                        val favoriteList = findViewById<RecyclerView>(R.id.favoriteList)
-                        favoriteList.layoutManager =
-                            LinearLayoutManager(this@UserFavoriteListActivity)
-                        val adapter = FavoriteListAdapter(this@UserFavoriteListActivity, dataList)
-                        favoriteList.adapter = adapter
+//                val trackViews = dataList.map { it.title to it.rank }.toMap()
+//
+//                // Sort and take the top 5
+//                val topTracks = trackViews.entries.sortedByDescending { it.value }.take(20)
+//
+//                // Prepare data for chart
+//                val labels = topTracks.map { it.key }
+//                val values = topTracks.map { it.value.toFloat() }
+//
+//                updateBarChart(barChart, labels, values)
 
-                        Log.d("TAG", "API Response successful")
-                    } else {
-                        Log.d("TAG", "API Response not successful")
-                    }
-                }
+
+                Log.d("TAG", "onResponse: " + response.body())
             }
-            override fun onFailure(p0: Call<MyData?>, p1: Throwable) {
-                Log.d("TAG", "API Response not successful")
+
+            override fun onFailure(p0: Call<MyData?>, t: Throwable) {
+//                If the Api call is a failure then this method is executed
+                Log.d("TAG", "onResponse: " + t.message)
             }
         })
     }
+
+    private fun updateBarChart(chart: BarChart, labels: List<String>, values: List<Float>) {
+        val barEntries = ArrayList<BarEntry>()
+        for (i in labels.indices) {
+            val barEntry = BarEntry(i.toFloat(), values[i])
+            barEntries.add(barEntry)
+        }
+
+        val barDataSet = BarDataSet(barEntries, "Top Tracks")
+        barDataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
+        barDataSet.valueTextSize = 16f
+        barDataSet.valueFormatter = object : ValueFormatter() {
+            override fun getBarLabel(barEntry: BarEntry): String {
+                return labels[barEntry.x.toInt()]
+            }
+        }
+
+        val barData = BarData(barDataSet)
+        chart.data = barData
+        chart.setFitBars(true)
+        chart.animateY(2000)
+        chart.invalidate()
+    }
 }
+
+
