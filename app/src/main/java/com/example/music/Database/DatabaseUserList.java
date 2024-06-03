@@ -11,7 +11,7 @@ import java.util.List;
 
 public class DatabaseUserList extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "UserList_Database";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String TABLE_NAME = "UserList";
     private static final String COLUMN_ID = "ID";
     private static final String COLUMN_TRACKID = "TrackID";
@@ -37,8 +37,14 @@ public class DatabaseUserList extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // Thêm bài hát vào danh sách yêu thích của người dùng
+    // Thêm bài hát vào danh sách yêu thích của người dùng (nếu chưa tồn tại)
     public boolean addTrackToFavorite(Long userID, Long trackID) {
+        // Kiểm tra xem bài hát đã tồn tại trong danh sách yêu thích của người dùng chưa
+        if (isTrackInFavorites(userID, trackID)) {
+            // Nếu đã tồn tại, không thêm vào lại
+            return false;
+        }
+
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_TRACKID, trackID);

@@ -126,12 +126,11 @@ class UserFavoriteListActivity : AppCompatActivity() {
             .create(ApiInterface::class.java)
 
         // Khởi tạo databaseUserList
-        databaseUserList = DatabaseUserList(this) // Khởi tạo databaseUserList
+        databaseUserList = DatabaseUserList(this)
 
-        // Lấy danh sách các ID bài hát yêu thích từ SQLite
         val favoriteTrackIDs = databaseUserList.getUserFavoriteTracks(userID)
 
-//       Gọi API để lấy dữ liệu cho danh sách các bài hát yêu thích
+        // Lấy danh sách các ID bài hát yêu thích từ SQLite
         val retrofitData = retrofitBuilder.getData(favoriteTrackIDs.joinToString(","))
 
         retrofitData.enqueue(object : Callback<MyData?> {
@@ -140,10 +139,10 @@ class UserFavoriteListActivity : AppCompatActivity() {
                     val dataList = response.body()?.data
 
                     if (dataList != null) {
+                        // Hiển thị thông tin bài hát trên giao diện người dùng
                         val favoriteList = findViewById<RecyclerView>(R.id.favoriteList)
-                        favoriteList.layoutManager =
-                            LinearLayoutManager(this@UserFavoriteListActivity)
-                        val adapter = FavoriteListAdapter(this@UserFavoriteListActivity, dataList)
+                        favoriteList.layoutManager = LinearLayoutManager(this@UserFavoriteListActivity)
+                        val adapter = FavoriteListAdapter(this@UserFavoriteListActivity, dataList!!, favoriteTrackIDs)
                         favoriteList.adapter = adapter
 
                         Log.d("TAG", "API Response successful")
