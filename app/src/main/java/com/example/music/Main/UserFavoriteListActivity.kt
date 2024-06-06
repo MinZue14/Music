@@ -15,6 +15,7 @@ import com.example.music.Adapter.FavoriteListAdapter
 import com.example.music.Adapter.TrackAdapter
 import com.example.music.Admin.AdminLogin
 import com.example.music.ApiInterface
+import com.example.music.Data
 import com.example.music.Database.DatabaseUserList
 import com.example.music.MyData
 import com.example.music.R
@@ -49,7 +50,8 @@ class UserFavoriteListActivity : AppCompatActivity() {
 
         // Lấy thông tin người dùng từ SharedPreferences
         val userIDString = sharedPref.getString("userID", null)
-        val userID = userIDString?.toLongOrNull() ?: -1L // Chuyển đổi thành Long hoặc gán mặc định là -1L nếu không thành công
+        val userID = userIDString?.toLongOrNull()
+            ?: -1L // Chuyển đổi thành Long hoặc gán mặc định là -1L nếu không thành công
         val username = sharedPref.getString("username", "") ?: ""
         val email = sharedPref.getString("email", "") ?: ""
 
@@ -84,6 +86,7 @@ class UserFavoriteListActivity : AppCompatActivity() {
                     startActivity(intent)
                     true
                 }
+
                 R.id.navCountry -> {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
@@ -101,6 +104,7 @@ class UserFavoriteListActivity : AppCompatActivity() {
                     startActivity(intent)
                     true
                 }
+
                 R.id.navLogOut -> {
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
@@ -116,44 +120,67 @@ class UserFavoriteListActivity : AppCompatActivity() {
         binding.btnOpenDrawer.setOnClickListener {
             drawer.openDrawer(GravityCompat.START)
         }
-
-//main
-        // Khởi tạo Retrofit
-        val retrofitBuilder = Retrofit.Builder()
-            .baseUrl("https://deezerdevs-deezer.p.rapidapi.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ApiInterface::class.java)
-
         // Khởi tạo databaseUserList
         databaseUserList = DatabaseUserList(this)
 
-        val favoriteTrackIDs = databaseUserList.getUserFavoriteTracks(userID)
+//main
+        // Khởi tạo databaseUserList
+        databaseUserList = DatabaseUserList(this)
 
-        // Lấy danh sách các ID bài hát yêu thích từ SQLite
-        val retrofitData = retrofitBuilder.getData(favoriteTrackIDs.joinToString(","))
+        // Lấy danh sách yêu thích từ CSDL
+        val favoriteTracks = databaseUserList.getUserFavoriteTracks(userID)
 
-        retrofitData.enqueue(object : Callback<MyData?> {
-            override fun onResponse(call: Call<MyData?>, response: Response<MyData?>) {
-                if (response.isSuccessful && response.body() != null) {
-                    val dataList = response.body()?.data
+        // Nếu danh sách yêu thích không rỗng
+        if (favoriteTracks.isNotEmpty()) {
+            // Gọi API để lấy thông tin chi tiết của các bài hát
+            val retrofitBuilder = Retrofit.Builder()
+                .baseUrl("https://deezerdevs-deezer.p.rapidapi.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(ApiInterface::class.java)
 
-                    if (dataList != null) {
-                        // Hiển thị thông tin bài hát trên giao diện người dùng
-                        val favoriteList = findViewById<RecyclerView>(R.id.favoriteList)
-                        favoriteList.layoutManager = LinearLayoutManager(this@UserFavoriteListActivity)
-                        val adapter = FavoriteListAdapter(this@UserFavoriteListActivity, dataList!!, favoriteTrackIDs)
-                        favoriteList.adapter = adapter
+        // List để lưu thông tin chi tiết của các bài hát
+            val trackDetailsList = mutableListOf<Data>()
 
-                        Log.d("TAG", "API Response successful")
-                    } else {
-                        Log.d("TAG", "API Response not successful")
+        // Biến đếm số lượng cuộc gọi API đã hoàn thành
+            var completedCalls = 0
+
+        // Lặp qua danh sách các ID bài hát yêu thích và gọi API để lấy thông tin chi tiết của từng bài hát
+            for (trackID in favoriteTracks) {
+                retrofitBuilder.getTrackDetail(trackID).enqueue(object : Callback<Data> {
+                    override fun onResponse(call: Call<Data>, response: Response<Data>) {
+                        if (response.isSuccessful && response.body() != null) {
+                            val trackDetail = response.body()
+                            trackDetail?.let {
+                                trackDetailsList.add(it)
+                            }
+                        }
+                        completedCalls++
+                        if (completedCalls == favoriteTracks.size) {
+                            // Nếu đã hoàn thành tất cả cuộc gọi API, hiển thị danh sách yêu thích lên giao diện
+                            val favoriteList = findViewById<RecyclerView>(R.id.favoriteList)
+                            favoriteList.layoutManager =
+                                LinearLayoutManager(this@UserFavoriteListActivity)
+                            val adapter =
+                                FavoriteListAdapter(this@UserFavoriteListActivity, trackDetailsList)
+                            favoriteList.adapter = adapter
+                        }
                     }
-                }
+
+                    override fun onFailure(call: Call<Data>, t: Throwable) {
+                        completedCalls++
+                        if (completedCalls == favoriteTracks.size) {
+                            // Nếu đã hoàn thành tất cả cuộc gọi API (kể cả khi có lỗi xảy ra), hiển thị danh sách yêu thích lên giao diện
+                            val favoriteList = findViewById<RecyclerView>(R.id.favoriteList)
+                            favoriteList.layoutManager =
+                                LinearLayoutManager(this@UserFavoriteListActivity)
+                            val adapter =
+                                FavoriteListAdapter(this@UserFavoriteListActivity, trackDetailsList)
+                            favoriteList.adapter = adapter
+                        }
+                    }
+                })
             }
-            override fun onFailure(p0: Call<MyData?>, p1: Throwable) {
-                Log.d("TAG", "API Response not successful")
-            }
-        })
+        }
     }
 }

@@ -59,7 +59,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_weight="1"
-            android:background="@color/white"
+            android:background="#E9E5E4"
             app:srcCompat="@drawable/baseline_favorite_red" />
     </LinearLayout>
 
