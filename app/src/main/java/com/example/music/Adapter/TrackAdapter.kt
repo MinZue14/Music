@@ -299,6 +299,15 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
     class trackListAdapter(var context: Activity, var dataList: List<Data>) :
         RecyclerView.Adapter<trackListAdapter.trackListViewHolder>(),Filterable {
 
+        // Khai báo một interface để xử lý sự kiện click
+        interface OnTrackClickListener {
+            fun onItemClick(data: Data)
+        }
+
+        // Biến để lưu trữ listener của sự kiện click
+        var onItemClickListener: OnTrackClickListener? = null
+
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): trackListViewHolder {
             val itemView =
                 LayoutInflater.from(context).inflate(R.layout.layout_list_track, parent, false)
@@ -349,8 +358,74 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
 
             Picasso.get().load(currentData.album.cover).into(holder.trackImage);
 
+//giao diện nhạc
+            // Thiết lập sự kiện click cho mỗi mục trong danh sách
+            holder.itemView.setOnClickListener {
+                // Kiểm tra xem listener đã được thiết lập hay chưa
+                onItemClickListener?.onItemClick(currentData)
+            }
+//favorite
+            // Kiểm tra xem bài hát đã tồn tại trong danh sách yêu thích của người dùng hay không
+            val dbManager = DatabaseUserList(context)
+            val sharedPref = context.getSharedPreferences("user_data", Context.MODE_PRIVATE)
+            val userIDString = sharedPref.getString("userID", null)
+            val userID = userIDString?.toLongOrNull() ?: -1L // Chuyển đổi thành Long hoặc gán mặc định là -1L nếu không thành công
+
+            if (userID != -1L) {
+                val trackID = currentData.id
+                val isTrackInFavorites = dbManager.isTrackInFavorites(userID, trackID)
+
+                if (isTrackInFavorites) {
+                    // Bài hát đã được yêu thích, hiển thị hình ảnh yêu thích đã chọn
+                    holder.imageButtonLove.setImageResource(R.drawable.baseline_favorite_red)
+                } else {
+                    // Bài hát chưa được yêu thích, hiển thị hình ảnh yêu thích bình thường
+                    holder.imageButtonLove.setImageResource(R.drawable.baseline_favorite)
+                }
+            }
+
+            // Thiết lập sự kiện click cho buttonLove
+            holder.imageButtonLove.setOnClickListener {
+
+                if (userID != -1L) {
+                    val currentData = dataList[position]
+                    val trackID = currentData.id
+
+                    // Kiểm tra xem bài hát đã tồn tại trong danh sách yêu thích của người dùng hay không
+                    val isTrackFavorited = isTrackInFavorites(userID, trackID)
+
+                    if (!isTrackFavorited) {
+                        // Thêm bài hát vào danh sách yêu thích của người dùng
+                        val dbManager = DatabaseUserList(context)
+                        val isSuccess = dbManager.addTrackToFavorite(userID, trackID)
+                        if (isSuccess) {
+                            Toast.makeText(context, "Bạn đã yêu thích bài hát này", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(context, "Xỏa bài hát khỏi danh sách yêu thích", Toast.LENGTH_SHORT).show()
+                        }
+
+                        // Thay đổi hình ảnh của buttonLove thành btnLoveRed
+                        holder.imageButtonLove.setImageResource(R.drawable.baseline_favorite_red)
+
+                    } else {
+                        // Xóa bài hát khỏi danh sách yêu thích của người dùng
+                        val dbManager = DatabaseUserList(context)
+                        val isSuccess = dbManager.removeTrackFromFavorite(userID, trackID)
+                        if (isSuccess) {
+                            Toast.makeText(context, "Bạn hong yêu thích bài này", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(context, "Xỏa bài hát khỏi danh sách yêu thích", Toast.LENGTH_SHORT).show()
+                        }
+
+                        // Đặt lại hình ảnh ban đầu của buttonLove
+                        holder.imageButtonLove.setImageResource(R.drawable.baseline_favorite)
+                    }
+                } else {
+                    Toast.makeText(context, "Không thể xác định người dùng", Toast.LENGTH_SHORT).show()
+                }
+            }
+//playlist
             // Biến để theo dõi trạng thái của buttonLove và buttonPlaylist
-            var isLoveSelected = false
             var isPlaylistSelected = false
 
             // Thiết lập sự kiện click cho thêm Playlist
@@ -374,49 +449,12 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
                 }
             }
 
-            // Thiết lập sự kiện click cho buttonLove
-            holder.imageButtonLove.setOnClickListener {
-                val dbManager = DatabaseUserList(context)
 
-                // Lấy userID từ SharedPreferences
-                val sharedPref = context.getSharedPreferences("user_data", Context.MODE_PRIVATE)
-                val userIDString = sharedPref.getString("userID", null)
-                val userID = userIDString?.toLongOrNull() ?: -1L // Chuyển đổi thành Long hoặc gán mặc định là -1L nếu không thành công
+        }
 
-                // Lấy trackID từ dữ liệu hiện tại trong RecyclerView
-                val currentData = dataList[position]
-                val trackID = currentData.id
-
-                if (!isLoveSelected) {
-                    // Thêm bài hát vào danh sách yêu thích của người dùng
-                    val isSuccess = dbManager.addTrackToFavorite(userID, trackID)
-                    if (isSuccess) {
-                        Toast.makeText(context, "Bạn đã yêu thích bài hát này", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(context, "Không thể thêm bài hát vào danh sách yêu thích", Toast.LENGTH_SHORT).show()
-                    }
-
-                    // Thay đổi hình ảnh của buttonLove thành btnLoveRed
-                    holder.imageButtonLove.setImageResource(R.drawable.baseline_favorite_red)
-
-                    // Đánh dấu là đã được chọn
-                    isLoveSelected = true
-                } else {
-                    // Xóa bài hát khỏi danh sách yêu thích của người dùng
-                    val isSuccess = dbManager.removeTrackFromFavorite(userID, trackID)
-                    if (isSuccess) {
-                        Toast.makeText(context, "Bạn hong yêu thích bài này", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(context, "Không thể xóa bài hát khỏi danh sách yêu thích", Toast.LENGTH_SHORT).show()
-                    }
-
-                    // Đặt lại hình ảnh ban đầu của buttonLove
-                    holder.imageButtonLove.setImageResource(R.drawable.baseline_favorite)
-
-                    // Đánh dấu là chưa được chọn
-                    isLoveSelected = false
-                }
-            }
+        private fun isTrackInFavorites(userID: Long, trackID: Long): Boolean {
+            val dbManager = DatabaseUserList(context)
+            return dbManager.isTrackInFavorites(userID, trackID)
         }
 
         class trackListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
