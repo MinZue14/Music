@@ -15,8 +15,10 @@ interface ApiInterface {
     fun getData(@Query("q") query: String): Call<MyData>
     @Headers("X-RapidAPI-Key: 3cc3f8f8e9msh6aea4eea6419b2dp155d04jsn36af6698f4f2",
         "X-RapidAPI-Host: deezerdevs-deezer.p.rapidapi.com")
+
     @GET("track/{trackId}")
     fun getTrackDetail(@Path("trackId") trackId: Long): Call<Data>
-
+    @GET("artist/{artistID}")
+    fun getArtistDetail(@Path("artistID") artistID: Long): Call<Artist>
 
 }

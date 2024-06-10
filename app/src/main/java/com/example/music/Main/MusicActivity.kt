@@ -33,7 +33,7 @@ class MusicActivity : AppCompatActivity() {
 
     private var currentTrackId: Long = 0L
     private var isFavorite: Boolean = false
-    private lateinit var mediaPlayer: MediaPlayer
+    lateinit var mediaPlayer: MediaPlayer
     private var isPlaying: Boolean = false
     private var isRepeat = false
 

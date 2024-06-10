@@ -112,12 +112,21 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
     class SlideAdapter(var context: Activity, var dataList: List<Data>) :
         RecyclerView.Adapter<SlideAdapter.SlideViewHolder>(), Filterable {
 
+        // Khai báo một interface để xử lý sự kiện click
+        interface OnArtistClickListener {
+            fun onItemClick(data: Data)
+        }
+
+        // Biến để lưu trữ listener của sự kiện click
+        var onItemClickListener: OnArtistClickListener? = null
+
         // Khởi tạo một HashSet để lưu trữ các ID của nghệ sĩ đã xuất hiện
         private val artistIds = HashSet<Int>()
 
         // Danh sách dữ liệu đã lọc, mỗi ca sĩ chỉ xuất hiện một lần
         private val filteredDataList = ArrayList<Data>()
         private var dataListFull: List<Data> = ArrayList(dataList)
+
         init {
             // Lọc dữ liệu khi khởi tạo Adapter
             filterData()
@@ -188,8 +197,14 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
             Picasso.get().load(currentData.artist.picture_small.toUri()).into(holder.artistImage);
 
             holder.artistImage.setOnClickListener {
-                // Do something when artist image is clicked
+                // Kiểm tra xem listener đã được thiết lập hay chưa
+                onItemClickListener?.onItemClick(currentData)
             }
+        }
+        fun updateData(newDataList: List<Data>) {
+            dataList = newDataList
+            filterData()
+            notifyDataSetChanged()
         }
 
         // Phương thức này được sử dụng để lọc dữ liệu, chỉ lấy mỗi ca sĩ một lần

@@ -5,9 +5,7 @@ import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
@@ -27,7 +25,6 @@ import com.example.music.R
 import com.example.music.databinding.ActivityMainBinding
 import com.example.music.databinding.HeaderMenuBinding
 import com.google.android.material.navigation.NavigationView
-import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -183,11 +180,20 @@ class MainActivity : AppCompatActivity() {
                 val adapter = TrackAdapter.SlideAdapter(this@MainActivity, dataList)
 
                 // Thiết lập LayoutManager cho RecyclerView
-                artistList.layoutManager =
-                    LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
+                artistList.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
 
                 // Thiết lập Adapter cho RecyclerView
                 artistList.adapter = adapter
+
+                // Thiết lập listener cho adapter
+                adapter.onItemClickListener = object : TrackAdapter.SlideAdapter.OnArtistClickListener{
+                    override fun onItemClick(data: Data) {
+                        // Mở giao diện nhạc của bài hát được nhấp
+                        val intent = Intent(this@MainActivity, ArtistActivity::class.java)
+                        intent.putExtra("artistID", data.artist.id.toString()) // Truyền ID của bài hát qua intent
+                        startActivity(intent)
+                    }
+                }
 
 // LIST ALBUM
                 // Khởi tạo RecyclerView và Adapter
@@ -215,18 +221,15 @@ class MainActivity : AppCompatActivity() {
                 trackList.adapter = adapter2
 
                 // Thiết lập listener cho adapter
-                adapter2.onItemClickListener =
-                    object : TrackAdapter.trackListAdapter.OnTrackClickListener {
-                        override fun onItemClick(data: Data) {
-                            // Mở giao diện nhạc của bài hát được nhấp
-                            val intent = Intent(this@MainActivity, MusicActivity::class.java)
-                            intent.putExtra(
-                                "trackId",
-                                data.id.toString()
-                            ) // Truyền ID của bài hát qua intent
-                            startActivity(intent)
-                        }
+                adapter2.onItemClickListener = object : TrackAdapter.trackListAdapter.OnTrackClickListener {
+                    override fun onItemClick(data: Data) {
+                        // Mở giao diện nhạc của bài hát được nhấp
+                        val intent = Intent(this@MainActivity, MusicActivity::class.java)
+                        intent.putExtra("trackId", data.id.toString()
+                        ) // Truyền ID của bài hát qua intent
+                        startActivity(intent)
                     }
+                }
 
                 Log.d("TAG", "onResponse: " + response.body())
             }

@@ -7,15 +7,11 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.denzcoskun.imageslider.ImageSlider
-import com.denzcoskun.imageslider.constants.ScaleTypes
-import com.denzcoskun.imageslider.models.SlideModel
 import com.example.music.Adapter.TrackAdapter
 import com.example.music.Admin.AdminLogin
 import com.example.music.ApiInterface
