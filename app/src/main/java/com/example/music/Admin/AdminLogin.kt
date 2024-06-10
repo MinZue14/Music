@@ -1,18 +1,24 @@
 package com.example.music.Admin
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.music.Database.DatabaseAdmin
+import com.example.music.Main.MainActivity
 import com.example.music.databinding.ActivityAdminLoginBinding
 
 class AdminLogin : AppCompatActivity() {
     lateinit var binding: ActivityAdminLoginBinding
     lateinit var databaseAdmin: DatabaseAdmin
+    lateinit var sharedPreferences: SharedPreferences
+    var resultDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +27,8 @@ class AdminLogin : AppCompatActivity() {
         setContentView(view)
 
         databaseAdmin = DatabaseAdmin(this)
+        //Lưu dữ liệu người dùng vào SharedPreferences
+        sharedPreferences = getSharedPreferences("admin_data", Context.MODE_PRIVATE)
 
         binding.loginBtn.setOnClickListener {
             val loginName = binding.loginName.text.toString()
@@ -29,9 +37,18 @@ class AdminLogin : AppCompatActivity() {
             if (loginName.isEmpty() || loginPass.isEmpty()) {
                 showErrorDialog("Vui lòng nhập dữ liệu!")
             } else {
-                val admin = databaseAdmin.checkPass(loginName, loginPass)
-                if (admin != null) {
-                    showResultDialog("Đăng nhập thành công!", admin)
+                val user = databaseAdmin.checkPass(loginName, loginPass)
+                if (user != null) {
+                    Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, AdminActivity::class.java)
+
+                    // Lưu thông tin người dùng vào SharedPreferences
+                    with(sharedPreferences.edit()) {
+                        putString("adminName", user.getAdminName())
+                        apply()
+                    }
+                    startActivity(intent)
+                    finish()
                 } else {
                     showErrorDialog("Đăng nhập thất bại!")
                 }
@@ -58,22 +75,20 @@ class AdminLogin : AppCompatActivity() {
         }
     }
 
-    private fun showResultDialog(message: String, admin: Admin) {
+    override fun onPause() {
+        super.onPause()
+        // Kiểm tra và đóng dialog nếu đang mở
+        resultDialog?.dismiss()
+    }
+
+    private fun showResultDialog(message: String) {
         val builder = AlertDialog.Builder(this)
         builder.setMessage(message)
-        val dialog = builder.create()
-        dialog.show()
-
-        // Đóng Dialog sau 2 giây và chuyển trang
-        Handler().postDelayed({
-            dialog.dismiss()
-            val intent = Intent(this, AdminActivity::class.java)
-
-            //lưu dữ liệu acc
-            intent.putExtra("admin_name", admin.getAdminName())
-            startActivity(intent)
-            finish()
-        }, 2000) // Thời gian là 2 giây (có thể điều chỉnh thời gian tùy ý)
+            .setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+            }
+        resultDialog = builder.create()
+        resultDialog?.show()
     }
 
     private fun showErrorDialog(message: String) {

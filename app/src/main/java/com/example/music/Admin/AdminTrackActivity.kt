@@ -1,6 +1,8 @@
 package com.example.music.Admin
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.SearchView
@@ -27,6 +29,7 @@ class AdminTrackActivity : AppCompatActivity() {
     lateinit var myRecycleView: RecyclerView
     lateinit var searchView: SearchView
     lateinit var trackAdapter: TrackAdapter
+    lateinit var sharedPref: SharedPreferences
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,8 +43,11 @@ class AdminTrackActivity : AppCompatActivity() {
         val drawer = findViewById<DrawerLayout>(R.id.admin)
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
 
-        // Lấy dữ liệu người dùng từ Intent
-        val adminName = intent.getStringExtra("admin_name")
+        // Khởi tạo SharedPreferences
+        sharedPref = getSharedPreferences("admin_data", Context.MODE_PRIVATE)
+
+        // Lấy thông tin người dùng từ SharedPreferences
+        val adminName = sharedPref.getString("adminName", "") ?: ""
 
         // Gán headerLayoutBinding cho navigationView menu
         val headerLayoutBinding = HeaderMenuBinding.bind(navigationView.getHeaderView(0))
