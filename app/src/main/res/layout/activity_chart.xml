@@ -47,19 +47,21 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
+                    android:orientation="vertical">
 
                     <ImageView
                         android:layout_width="wrap_content"
-                        android:layout_height="100dp"
-                        android:layout_weight="1"/>
+                        android:layout_height="90dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bxh"
+                        android:padding="15sp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Xu Hướng Âm Nhạc"
                         android:textSize="20sp"
+                        android:padding="15sp"
                         android:textStyle="italic"/>
 
                     <com.github.mikephil.charting.charts.HorizontalBarChart
@@ -67,7 +69,8 @@
                         android:layout_height="500dp"
                         android:layout_weight="1"
                         android:id="@+id/barChart"
-                        android:layout_marginBottom="6dp"/>
+                        android:layout_marginBottom="6dp"
+                        android:padding="15sp"/>
 
                     <!--list ca sĩ-->
                     <LinearLayout
@@ -106,6 +109,25 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/albumList"
+                            android:orientation="horizontal"/>
+                    </LinearLayout>
+                    <!--list nhạc-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="720dp"
+                        android:orientation="vertical"
+                        android:padding="20sp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bài hát nổi bật"
+                            android:textStyle="bold"
+                            android:textSize="20sp"
+                            android:paddingBottom="10sp"/>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/trackList"
                             android:orientation="horizontal"/>
                     </LinearLayout>
 
