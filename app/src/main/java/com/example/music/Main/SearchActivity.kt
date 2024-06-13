@@ -74,18 +74,13 @@ class SearchActivity: AppCompatActivity() {
                     true
                 }
 
-                R.id.navGenre -> {
+                R.id.navPlaylist -> {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     true
                 }
 
                 R.id.navChart -> {
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                R.id.navCountry -> {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     true
