@@ -76,7 +76,7 @@ class UserFavoriteListActivity : AppCompatActivity() {
                 }
 
                 R.id.navPlaylist -> {
-                    val intent = Intent(this, MainActivity::class.java)
+                    val intent = Intent(this, UserPlaylistActivity::class.java)
                     startActivity(intent)
                     true
                 }
@@ -115,9 +115,6 @@ class UserFavoriteListActivity : AppCompatActivity() {
         binding.btnOpenDrawer.setOnClickListener {
             drawer.openDrawer(GravityCompat.START)
         }
-        // Khởi tạo databaseUserList
-        databaseUserList = DatabaseUserList(this)
-
 //main
         // Khởi tạo databaseUserList
         databaseUserList = DatabaseUserList(this)
@@ -154,11 +151,21 @@ class UserFavoriteListActivity : AppCompatActivity() {
                         if (completedCalls == favoriteTracks.size) {
                             // Nếu đã hoàn thành tất cả cuộc gọi API, hiển thị danh sách yêu thích lên giao diện
                             val favoriteList = findViewById<RecyclerView>(R.id.favoriteList)
-                            favoriteList.layoutManager =
-                                LinearLayoutManager(this@UserFavoriteListActivity)
-                            val adapter =
-                                FavoriteListAdapter(this@UserFavoriteListActivity, trackDetailsList)
+                            favoriteList.layoutManager = LinearLayoutManager(this@UserFavoriteListActivity)
+                            val adapter = FavoriteListAdapter(this@UserFavoriteListActivity, trackDetailsList)
                             favoriteList.adapter = adapter
+
+                            // Thiết lập listener cho adapter
+                            adapter.onItemClickListener = object : FavoriteListAdapter.OnTrackClickListener {
+                                override fun onItemClick(data: Data) {
+                                    // Mở giao diện nhạc của bài hát được nhấp
+                                    val intent = Intent(this@UserFavoriteListActivity, MusicActivity::class.java)
+                                    intent.putExtra("trackId", data.id.toString()
+                                    ) // Truyền ID của bài hát qua intent
+                                    startActivity(intent)
+                                }
+                            }
+
                         }
                     }
 

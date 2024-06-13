@@ -73,7 +73,7 @@ class ArtistActivity : AppCompatActivity() {
                 }
 
                 R.id.navPlaylist -> {
-                    val intent = Intent(this, MainActivity::class.java)
+                    val intent = Intent(this, UserPlaylistActivity::class.java)
                     startActivity(intent)
                     true
                 }

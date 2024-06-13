@@ -16,6 +16,7 @@ import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.Data
 import com.example.music.Database.DatabaseUserList
+import com.example.music.Database.DatabaseUserPlaylist
 import com.example.music.R
 import com.squareup.picasso.Picasso
 import java.util.Locale
@@ -416,7 +417,7 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
                         if (isSuccess) {
                             Toast.makeText(context, "Bạn đã yêu thích bài hát này", Toast.LENGTH_SHORT).show()
                         } else {
-                            Toast.makeText(context, "Xỏa bài hát khỏi danh sách yêu thích", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Xóa bài hát khỏi danh sách yêu thích", Toast.LENGTH_SHORT).show()
                         }
 
                         // Thay đổi hình ảnh của buttonLove thành btnLoveRed
@@ -429,7 +430,7 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
                         if (isSuccess) {
                             Toast.makeText(context, "Bạn hong yêu thích bài này", Toast.LENGTH_SHORT).show()
                         } else {
-                            Toast.makeText(context, "Xỏa bài hát khỏi danh sách yêu thích", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Xóa bài hát khỏi danh sách yêu thích", Toast.LENGTH_SHORT).show()
                         }
 
                         // Đặt lại hình ảnh ban đầu của buttonLove
@@ -440,36 +441,72 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
                 }
             }
 //playlist
-            // Biến để theo dõi trạng thái của buttonLove và buttonPlaylist
-            var isPlaylistSelected = false
+            // Kiểm tra xem bài hát đã tồn tại trong danh sách playlist của người dùng hay không
+            val dbManager1 = DatabaseUserPlaylist(context)
 
-            // Thiết lập sự kiện click cho thêm Playlist
-            holder.imageButtonPlaylist.setOnClickListener {
-                if (!isPlaylistSelected) {
-                    // Hiển thị Toast
-                    Toast.makeText(context, "Đã thêm vào playlist", Toast.LENGTH_SHORT).show()
+            if (userID != -1L) {
+                val trackID = currentData.id
+                val isTrackInPlaylist = dbManager1.isTrackInPlaylist(userID, trackID)
 
-                    // Thay đổi hình ảnh của buttonPlaylist thành buttonAdd
+                if (isTrackInPlaylist) {
+                    // Bài hát đã được thêm vào playlist, hiển thị hình ảnh playlist đã chọn
                     holder.imageButtonPlaylist.setImageResource(R.drawable.baseline_playlist_add_check)
-
-                    // Đánh dấu là đã được chọn
-                    isPlaylistSelected = true
                 } else {
-                    // Đặt lại hình ảnh ban đầu của buttonPlaylist
+                    // Bài hát chưa được thm vào playlist, hiển thị hình ảnh playlist bình thường
                     holder.imageButtonPlaylist.setImageResource(R.drawable.baseline_genre)
-                    Toast.makeText(context, "Hủy thêm vào playlist", Toast.LENGTH_SHORT).show()
-
-                    // Đánh dấu là chưa được chọn
-                    isPlaylistSelected = false
                 }
             }
 
+            // Thiết lập sự kiện click cho buttonPlaylist
+            holder.imageButtonPlaylist.setOnClickListener {
+
+                if (userID != -1L) {
+                    val currentData = dataList[position]
+                    val trackID = currentData.id
+
+                    // Kiểm tra xem bài hát đã tồn tại trong Playlist của người dùng hay không
+                    val isTrackPlaylist = isTrackInPlaylist(userID, trackID)
+
+                    if (!isTrackPlaylist) {
+                        // Thêm bài hát vào Playlist của người dùng
+                        val dbManager1 = DatabaseUserPlaylist(context)
+                        val isSuccess = dbManager1.addTrackToPlaylist(userID, trackID)
+                        if (isSuccess) {
+                            Toast.makeText(context, "Bạn đã thêm bài hát này vào playlist", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(context, "Xóa bài hát khỏi playlist", Toast.LENGTH_SHORT).show()
+                        }
+
+                        // Thay đổi hình ảnh của imageButtonPlaylist thành baseline_playlist_add_check
+                        holder.imageButtonPlaylist.setImageResource(R.drawable.baseline_playlist_add_check)
+
+                    } else {
+                        // Xóa bài hát khỏi playlist của người dùng
+                        val dbManager1 = DatabaseUserPlaylist(context)
+                        val isSuccess = dbManager1.removeTrackFromPlaylist(userID, trackID)
+                        if (isSuccess) {
+                            Toast.makeText(context, "Bạn hong bỏ bài hát này vào playlist ", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(context, "Xóa bài hát khỏi playlist", Toast.LENGTH_SHORT).show()
+                        }
+
+                        // Đặt lại hình ảnh ban đầu của buttonLove
+                        holder.imageButtonPlaylist.setImageResource(R.drawable.baseline_genre)
+                    }
+                } else {
+                    Toast.makeText(context, "Không thể xác định người dùng", Toast.LENGTH_SHORT).show()
+                }
+            }
 
         }
 
         private fun isTrackInFavorites(userID: Long, trackID: Long): Boolean {
             val dbManager = DatabaseUserList(context)
             return dbManager.isTrackInFavorites(userID, trackID)
+        }
+        private fun isTrackInPlaylist(userID: Long, trackID: Long): Boolean {
+            val dbManager1 = DatabaseUserPlaylist(context)
+            return dbManager1.isTrackInPlaylist(userID, trackID)
         }
 
         class trackListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
