@@ -75,7 +75,7 @@ class UserFavoriteListActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.navGenre -> {
+                R.id.navPlaylist -> {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     true
@@ -87,11 +87,6 @@ class UserFavoriteListActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.navCountry -> {
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
 
                 R.id.nav_user_to_admin -> {
                     val intent = Intent(this, AdminLogin::class.java)

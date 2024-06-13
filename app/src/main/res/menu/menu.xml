@@ -20,20 +20,14 @@
                 <menu>
                         <item
                             android:icon="@drawable/baseline_genre"
-                            android:id="@+id/navGenre"
-                            android:title="Tuyển Tập">
+                            android:id="@+id/navPlaylist"
+                            android:title="Playlist">
                         </item>
 
                         <item
                             android:icon="@drawable/baseline_chart"
                             android:id="@+id/navChart"
                             android:title="Bảng Xếp Hạng">
-                        </item>
-
-                        <item
-                            android:icon="@drawable/baseline_country"
-                            android:id="@+id/navCountry"
-                            android:title="Quốc Gia">
                         </item>
                 </menu>
         </item>

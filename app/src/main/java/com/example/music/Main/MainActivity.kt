@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.navGenre -> {
+                R.id.navPlaylist -> {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     true
@@ -89,12 +89,6 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.navChart -> {
                     val intent = Intent(this, ChartActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-
-                R.id.navCountry -> {
-                    val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     true
                 }
@@ -201,8 +195,7 @@ class MainActivity : AppCompatActivity() {
                 val adapter1 = TrackAdapter.AlbumAdapter(this@MainActivity, dataList)
 
                 // Thiết lập LayoutManager cho RecyclerView
-                val layoutManager =
-                    GridLayoutManager(this@MainActivity, 2, RecyclerView.VERTICAL, false)
+                val layoutManager = GridLayoutManager(this@MainActivity, 2, RecyclerView.VERTICAL, false)
                 albumList.layoutManager = layoutManager
 
                 // Thiết lập Adapter cho RecyclerView
