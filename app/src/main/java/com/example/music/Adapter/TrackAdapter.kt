@@ -229,6 +229,15 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
     /////////////// list album   /////////////////
     class AlbumAdapter(var context: Activity, var dataList: List<Data>) :
         RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>(),Filterable {
+
+        // Khai báo một interface để xử lý sự kiện click
+        interface OnAlbumClickListener {
+            fun onItemClick(data: Data)
+        }
+
+        // Biến để lưu trữ listener của sự kiện click
+        var onItemClickListener: OnAlbumClickListener? = null
+
         // Khởi tạo một HashSet để lưu trữ các ID của album đã xuất hiện
         private val albumIds = HashSet<Int>()
 
@@ -283,14 +292,16 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
         }
 
         override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
+
+
             val currentData = filteredDataList[position]
 
             holder.albumName.text = currentData.album.title
 
             Picasso.get().load(currentData.album.cover_medium.toUri()).into(holder.albumImage);
 
-            holder.albumName.setOnClickListener {
-                // Do something when artist image is clicked
+            holder.itemView.setOnClickListener {
+                onItemClickListener?.onItemClick(currentData)
             }
         }
         // Phương thức này được sử dụng để lọc dữ liệu, chỉ lấy mỗi album 1 lần

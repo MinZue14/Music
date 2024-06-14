@@ -201,6 +201,17 @@ class MainActivity : AppCompatActivity() {
                 // Thiết lập Adapter cho RecyclerView
                 albumList.adapter = adapter1
 
+                // Thiết lập listener cho adapter
+                adapter1.onItemClickListener = object : TrackAdapter.AlbumAdapter.OnAlbumClickListener {
+                    override fun onItemClick(data: Data) {
+                        // Mở giao diện album được nhấp
+                        val intent = Intent(this@MainActivity, AlbumActivity::class.java)
+                        intent.putExtra("albumId", data.album.id.toString()
+                        ) // Truyền ID của bài hát qua intent
+                        startActivity(intent)
+                    }
+                }
+
 // LIST NHẠC
                 // Khởi tạo RecyclerView và Adapter
                 val trackList = findViewById<RecyclerView>(R.id.trackList)

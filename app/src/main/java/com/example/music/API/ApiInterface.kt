@@ -28,4 +28,11 @@ interface ApiInterface {
     )
     @GET("artist/{artistId}")
     fun getArtistDetail(@Path("artistId") artistId: Long): Call<Artist>
+    @Headers(
+        "X-RapidAPI-Key: 3cc3f8f8e9msh6aea4eea6419b2dp155d04jsn36af6698f4f2",
+        "X-RapidAPI-Host: deezerdevs-deezer.p.rapidapi.com"
+    )
+    @GET("album/{albumId}")
+    fun getAlbumDetail(@Path("albumId") albumId: Long): Call<Album>
+
 }

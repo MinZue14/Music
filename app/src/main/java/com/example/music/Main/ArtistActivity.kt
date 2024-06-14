@@ -32,7 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class ArtistActivity : AppCompatActivity() {
     lateinit var binding: ActivityArtistBinding
     lateinit var sharedPref: SharedPreferences
-    private lateinit var dataList: List<Data>
+    private var dataList: List<Data> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -176,6 +176,4 @@ class ArtistActivity : AppCompatActivity() {
             Log.d("TAG", "Artist ID is null or empty")
         }
     }
-    // Hàm gọi API để lấy danh sách bài hát của nghệ sĩ
-
 }
