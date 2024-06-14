@@ -184,7 +184,7 @@ class MainActivity : AppCompatActivity() {
                     override fun onItemClick(data: Data) {
                         // Mở giao diện nhạc của bài hát được nhấp
                         val intent = Intent(this@MainActivity, ArtistActivity::class.java)
-                        intent.putExtra("artistID", data.artist.id.toString()) // Truyền ID của bài hát qua intent
+                        intent.putExtra("artistId", data.artist.id.toString()) // Truyền ID của bài hát qua intent
                         startActivity(intent)
                     }
                 }

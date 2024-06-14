@@ -32,7 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class ArtistActivity : AppCompatActivity() {
     lateinit var binding: ActivityArtistBinding
     lateinit var sharedPref: SharedPreferences
-    private var dataList: List<Data> = listOf()
+    private lateinit var dataList: List<Data>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,7 +120,7 @@ class ArtistActivity : AppCompatActivity() {
             .build()
             .create(ApiInterface::class.java)
 
-        val artistID = intent.getStringExtra("artistID")
+        val artistID = intent.getStringExtra("artistId")
         Log.d("TAG", "Artist ID from intent: $artistID") // Debug artistID
 
         if (!artistID.isNullOrEmpty()) {
@@ -132,8 +132,33 @@ class ArtistActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         val artist = response.body()
                         if (artist != null) {
+
+                            // Hiển thị giao diện ca si từ dữ liệu API
+                            binding.artistName.text = artist.name
+                            Picasso.get().load(artist.picture_medium).into(binding.artistImage)
+
+                            // Khởi tạo RecyclerView và Adapter
+                            val trackList = findViewById<RecyclerView>(R.id.trackList)
+                            val adapter = ArtistAdapter(this@ArtistActivity, dataList)
+
+                            // Thiết lập LayoutManager cho RecyclerView
+                            trackList.layoutManager = LinearLayoutManager(this@ArtistActivity, LinearLayoutManager.HORIZONTAL, false)
+
+                            // Thiết lập Adapter cho RecyclerView
+                            trackList.adapter = adapter
+
+                            // Thiết lập listener cho adapter
+                            adapter.onItemClickListener = object : ArtistAdapter.OnArtistClickListener{
+                                override fun onItemClick(data: Data) {
+                                    // Mở giao diện nhạc của bài hát được nhấp
+                                    val intent = Intent(this@ArtistActivity, MusicActivity::class.java)
+                                    intent.putExtra("trackId", data.id.toString()
+                                    ) // Truyền ID của bài hát qua intent
+                                    startActivity(intent)
+                                }
+                            }
+
                             Log.d("TAG", "Artist Name: ${artist.name}")
-                            Log.d("TAG", "Artist Link: ${artist.link}")
                         } else {
                             Log.d("TAG", "No artist data received")
                         }
@@ -151,4 +176,6 @@ class ArtistActivity : AppCompatActivity() {
             Log.d("TAG", "Artist ID is null or empty")
         }
     }
+    // Hàm gọi API để lấy danh sách bài hát của nghệ sĩ
+
 }

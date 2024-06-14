@@ -240,7 +240,6 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
             filterData()
         }
 
-
         // Khai báo Filter để thực hiện việc lọc dữ liệu
         private val albumFilter = object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
@@ -322,7 +321,6 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
 
         // Biến để lưu trữ listener của sự kiện click
         var onItemClickListener: OnTrackClickListener? = null
-
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): trackListViewHolder {
             val itemView =

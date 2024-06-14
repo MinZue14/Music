@@ -99,7 +99,7 @@
                         android:textStyle="italic" />
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/TrackList"
+                        android:id="@+id/trackList"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_margin="20sp" />
