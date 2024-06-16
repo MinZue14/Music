@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.music.Adapter.TrackAdapter
 import com.example.music.Admin.AdminLogin
 import com.example.music.ApiInterface
+import com.example.music.Data
 import com.example.music.MyData
 import com.example.music.R
 import com.example.music.databinding.ActivitySearchBinding
@@ -141,6 +142,15 @@ class SearchActivity: AppCompatActivity() {
                 // Thiết lập Adapter cho RecyclerView
                 artistList.adapter = adapter
 
+                // Thiết lập listener cho adapter
+                adapter.onItemClickListener = object : TrackAdapter.SlideAdapter.OnArtistClickListener{
+                    override fun onItemClick(data: Data) {
+                        // Mở giao diện nhạc của bài hát được nhấp
+                        val intent = Intent(this@SearchActivity, ArtistActivity::class.java)
+                        intent.putExtra("artistId", data.artist.id.toString()) // Truyền ID của bài hát qua intent
+                        startActivity(intent)
+                    }
+                }
 // LIST ALBUM
                 // Khởi tạo RecyclerView và Adapter
                 val albumList = findViewById<RecyclerView>(R.id.albumList_)
@@ -153,6 +163,17 @@ class SearchActivity: AppCompatActivity() {
                 // Thiết lập Adapter cho RecyclerView
                 albumList.adapter = adapter1
 
+                // Thiết lập listener cho adapter
+                adapter1.onItemClickListener = object : TrackAdapter.AlbumAdapter.OnAlbumClickListener {
+                    override fun onItemClick(data: Data) {
+                        // Mở giao diện nhạc của bài hát được nhấp
+                        val intent = Intent(this@SearchActivity, AlbumActivity::class.java)
+                        intent.putExtra("albumId", data.id.toString()
+                        ) // Truyền ID của bài hát qua intent
+                        startActivity(intent)
+                    }
+                }
+
 // LIST NHẠC
                 // Khởi tạo RecyclerView và Adapter
                 val trackList = findViewById<RecyclerView>(R.id.trackList_)
@@ -163,6 +184,17 @@ class SearchActivity: AppCompatActivity() {
 
                 // Thiết lập Adapter cho RecyclerView
                 trackList.adapter = adapter2
+
+                // Thiết lập listener cho adapter
+                adapter2.onItemClickListener = object : TrackAdapter.trackListAdapter.OnTrackClickListener {
+                    override fun onItemClick(data: Data) {
+                        // Mở giao diện nhạc của bài hát được nhấp
+                        val intent = Intent(this@SearchActivity, MusicActivity::class.java)
+                        intent.putExtra("trackId", data.id.toString()
+                        ) // Truyền ID của bài hát qua intent
+                        startActivity(intent)
+                    }
+                }
 
                 Log.d("TAG", "onResponse: " + response.body())
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
