@@ -170,7 +170,7 @@ class ArtistActivity : AppCompatActivity() {
                                             }
                                         }
 
-                                    Log.d("TAG", "onResponse: " + p1.body())
+                                    Log.d("TAG", "onResponse: mmmmm" + p1.body())
                                 }
 
 
