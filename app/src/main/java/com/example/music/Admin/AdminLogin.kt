@@ -40,7 +40,7 @@ class AdminLogin : AppCompatActivity() {
                 val user = databaseAdmin.checkPass(loginName, loginPass)
                 if (user != null) {
                     Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, AdminActivity::class.java)
+                    val intent = Intent(this, AdminUserActivity::class.java)
 
                     // Lưu thông tin người dùng vào SharedPreferences
                     with(sharedPreferences.edit()) {

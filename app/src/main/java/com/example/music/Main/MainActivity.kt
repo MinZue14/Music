@@ -20,6 +20,7 @@ import com.example.music.ApiInterface
 import com.example.music.MyData
 import com.example.music.Adapter.TrackAdapter
 import com.example.music.Admin.AdminLogin
+import com.example.music.Album
 import com.example.music.Data
 import com.example.music.R
 import com.example.music.databinding.ActivityMainBinding
@@ -138,7 +139,7 @@ class MainActivity : AppCompatActivity() {
             .create(ApiInterface::class.java)
 
         // Gọi API để lấy dữ liệu bài hát
-        val retrofitData = retrofitBuilder.getData("bts")
+        val retrofitData = retrofitBuilder.getData("ladi")
 
         retrofitData.enqueue(object : Callback<MyData?> {
             override fun onResponse(p0: Call<MyData?>, response: Response<MyData?>) {
@@ -206,7 +207,7 @@ class MainActivity : AppCompatActivity() {
                     override fun onItemClick(data: Data) {
                         // Mở giao diện nhạc của bài hát được nhấp
                         val intent = Intent(this@MainActivity, AlbumActivity::class.java)
-                        intent.putExtra("albumId", data.id.toString()
+                        intent.putExtra("albumId", data.album.id.toString()
                         ) // Truyền ID của bài hát qua intent
                         startActivity(intent)
                     }
@@ -245,7 +246,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         // Gọi API để lấy dữ liệu bài hát
-        val retrofitData1 = retrofitBuilder.getData("blackpink")
+        val retrofitData1 = retrofitBuilder.getData("lili")
 
         retrofitData1.enqueue(object : Callback<MyData?> {
             override fun onResponse(p0: Call<MyData?>, p1: Response<MyData?>) {

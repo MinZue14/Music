@@ -21,7 +21,7 @@
             android:name=".Main.UserPlaylistActivity"
             android:exported="false" />
         <activity
-            android:name=".Main.ArtistActivity"
+            android:name=".Admin.AdminActivity"
             android:exported="false" />
         <activity
             android:name=".Main.ChartActivity"
@@ -48,7 +48,7 @@
             android:name=".Admin.AdminUserActivity"
             android:exported="false" />
         <activity
-            android:name=".Admin.AdminActivity"
+            android:name=".Main.ArtistActivity"
             android:exported="false" />
         <activity
             android:name=".Admin.AdminSignUp"

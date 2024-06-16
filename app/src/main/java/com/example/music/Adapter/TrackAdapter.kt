@@ -136,7 +136,7 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
         private val slideFilter = object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val filteredList = ArrayList<Data>()
-                val  artistIds_ = HashSet<Int>()
+                val artistIds_ = HashSet<Int>()
                 if (constraint == null || constraint.isEmpty()) {
                     for (item in dataListFull) {
                         if (!artistIds_.contains(item.artist.id)) {
@@ -144,15 +144,9 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
                             artistIds_.add(item.artist.id)
                         }
                     }
-//                    filteredList.addAll(filteredDataList)
                 } else {
                     val filterPattern = constraint.toString().lowercase(Locale.getDefault()).trim()
-//                    for (item in dataListFull) {
-//                        if (item.artist.name.lowercase(Locale.getDefault()).contains(filterPattern)) {
-//                                filteredList.add(item)
-//
-//                        }
-//                    }
+
                     val uniqueArtistNames = mutableSetOf<String>()  // Sử dụng Set để theo dõi các tên nghệ sĩ duy nhất
 
                     for (item in dataListFull) {
@@ -539,6 +533,9 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
         }
 
     }
+    /// Track Artist
+
+
 
 
 }

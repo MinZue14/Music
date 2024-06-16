@@ -134,7 +134,7 @@ class SearchActivity: AppCompatActivity() {
 // LIST CA SĨ
                 // Khởi tạo RecyclerView và Adapter
                 val artistList = findViewById<RecyclerView>(R.id.artistList_)
-                 val adapter = TrackAdapter.SlideAdapter(this@SearchActivity, dataList)
+                val adapter = TrackAdapter.SlideAdapter(this@SearchActivity, dataList)
 
                 // Thiết lập LayoutManager cho RecyclerView
                 artistList.layoutManager = LinearLayoutManager(this@SearchActivity, LinearLayoutManager.HORIZONTAL, false)
@@ -205,12 +205,12 @@ class SearchActivity: AppCompatActivity() {
 
                     override fun onQueryTextChange(newText: String?): Boolean {
                         // Filter data as user types in the SearchView
-//                trackAdapter.filter.filter(newText)
+//                      trackAdapter.filter.filter(newText)
 //                        adapter.filterData()
                         adapter.filter.filter(newText)
 
-                adapter1.filter.filter(newText)
-                adapter2.filter.filter(newText)
+                        adapter1.filter.filter(newText)
+                        adapter2.filter.filter(newText)
 
                         return true
                     }
