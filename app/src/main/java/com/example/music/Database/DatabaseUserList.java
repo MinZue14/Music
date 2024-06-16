@@ -92,8 +92,9 @@ public class DatabaseUserList extends SQLiteOpenHelper {
         String[] columns = {COLUMN_TRACKID};
         String selection = COLUMN_USERID + " = ?";
         String[] selectionArgs = {String.valueOf(userID)};
+        String sortOrder = COLUMN_TRACKID + " ASC"; // Sắp xếp theo thứ tự tăng dần của TrackID
 
-        Cursor cursor = db.query(TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+        Cursor cursor = db.query(TABLE_NAME, columns, selection, selectionArgs, null, null, sortOrder);
 
         int trackIdColumnIndex = cursor.getColumnIndexOrThrow(COLUMN_TRACKID);
 

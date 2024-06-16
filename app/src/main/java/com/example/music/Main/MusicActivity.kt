@@ -37,12 +37,19 @@ class MusicActivity : AppCompatActivity() {
     private var isPlaying: Boolean = false
     private var isRepeat = false
 
+//  dành cho favorite
+    private lateinit var favoriteTrackIds: LongArray
+    private var currentTrackIndex: Int = 0
+
+//  dành cho playlist
+    private lateinit var playlistTrackIds: LongArray
+    private var currentTrackIndex1: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMusicBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
 
 //menu
         // Khai báo drawerLayout và navigationView
@@ -127,6 +134,22 @@ class MusicActivity : AppCompatActivity() {
         // Lấy ID của bài hát từ intent
         val trackId = intent.getStringExtra("trackId")
         Log.d("TAG", "Track ID from intent: $trackId") // Debug trackId
+
+//favorite{
+        // Lấy danh sách yêu thích từ intent
+        favoriteTrackIds = intent.getLongArrayExtra("favoriteTrackIds") ?: longArrayOf()
+
+        // Tìm chỉ số của trackId hiện tại trong danh sách yêu thích
+        currentTrackIndex = favoriteTrackIds.indexOf(trackId?.toLongOrNull() ?: -1)
+//}
+
+//playlist{
+        // Lấy danh sách playlist từ intent
+        playlistTrackIds = intent.getLongArrayExtra("playlistTrackIds") ?: longArrayOf()
+
+        // Tìm chỉ số của trackId hiện tại trong danh sách playlist
+        currentTrackIndex1 = playlistTrackIds.indexOf(trackId?.toLongOrNull() ?: -1)
+//}
 
         if (!trackId.isNullOrEmpty()) { // Kiểm tra xem trackId có null hoặc rỗng không
             // Chuyển trackId từ String sang Long
@@ -290,65 +313,78 @@ class MusicActivity : AppCompatActivity() {
     }
 
     private fun playPreviousTrack() {
-        // Xử lý logic cho nút Back
         Log.d("TAG", "Back button clicked")
 
-        // Giảm currentTrackId một đơn vị để lấy previousTrackId
-        val previousTrackId = currentTrackId - 1
+        // Dừng bài hát hiện tại
+        mediaPlayer.stop()
+        mediaPlayer.reset()
 
-        if (isValidTrackId(previousTrackId)) {
+        // Xử lý cho danh sách yêu thích (favorite)
+        if (currentTrackIndex > 0 && currentTrackIndex < favoriteTrackIds.size) {
+            currentTrackIndex--
+            val previousTrackId = favoriteTrackIds[currentTrackIndex]
             playTrackById(previousTrackId)
         } else {
-            // Xử lý khi không có bài hát trước đó
             Log.d("TAG", "No previous track available")
-            Toast.makeText(this, "Không có bài nào ở trước!", Toast.LENGTH_SHORT).show()
+        }
+
+        // Xử lý cho danh sách playlist (playlist)
+        if (currentTrackIndex1 > 0 && currentTrackIndex1 < playlistTrackIds.size) {
+            currentTrackIndex1--
+            val previousTrackId1 = playlistTrackIds[currentTrackIndex1]
+            playTrackById(previousTrackId1)
+        } else {
+            Log.d("TAG", "No previous track available")
         }
     }
 
     private fun playNextTrack() {
-        // Xử lý logic cho nút Next
         Log.d("TAG", "Next button clicked")
 
-        // Tăng currentTrackId lên một đơn vị để lấy nextTrackId
-        val nextTrackId = currentTrackId + 1
+        // Dừng bài hát hiện tại
+        mediaPlayer.stop()
+        mediaPlayer.reset()
 
-        if (isValidTrackId(nextTrackId)) {
+        // Xử lý cho danh sách yêu thích (favorite)
+        if (currentTrackIndex >= 0 && currentTrackIndex < favoriteTrackIds.size - 1) {
+            currentTrackIndex++
+            val nextTrackId = favoriteTrackIds[currentTrackIndex]
             playTrackById(nextTrackId)
         } else {
             Log.d("TAG", "No next track available")
-            Toast.makeText(this, "Không có bài tiếp theo!", Toast.LENGTH_SHORT).show()
         }
-    }
-    private fun isValidTrackId(trackId: Long): Boolean {
-        // Giả sử bạn có danh sách các ID bài hát hợp lệ
-        val validTrackIds = listOf<Long>(1, 2, 3, 4, 5) // Ví dụ danh sách các ID hợp lệ
-        return validTrackIds.contains(trackId)
+
+        // Xử lý cho danh sách playlist (playlist)
+        if (currentTrackIndex1 >= 0 && currentTrackIndex1 < playlistTrackIds.size - 1) {
+            currentTrackIndex1++
+            val nextTrackId1 = playlistTrackIds[currentTrackIndex1]
+            playTrackById(nextTrackId1)
+        } else {
+            Log.d("TAG", "No next track available")
+        }
     }
 
     private fun playTrackById(trackId: Long) {
-        // Gọi API để lấy thông tin chi tiết của bài hát dựa trên trackId
         val retrofitData = retrofitBuilder.getTrackDetail(trackId)
 
         retrofitData.enqueue(object : Callback<Data?> {
             override fun onResponse(call: Call<Data?>, response: Response<Data?>) {
-                // Nếu cuộc gọi API thành công thì phương thức này được thực thi
                 val data = response.body()
                 if (data != null) {
-                    // Hiển thị giao diện phát nhạc từ dữ liệu API
                     binding.trackName.text = data.title
                     binding.artistName.text = data.artist.name
                     currentTrackId = data.id
 
                     Picasso.get().load(data.album.cover_medium).into(binding.trackImage)
 
-                    // Format and set the total time
                     val minutes = data.duration / 60
                     val seconds = data.duration % 60
                     val formattedTime = String.format("%d:%02d", minutes, seconds)
                     binding.totalTime.text = formattedTime
 
-                    // Set up MediaPlayer
                     setupMediaPlayer(data.preview)
+                    isFavorite = checkIfFavorite(data.id.toLong())
+                    updateFavoriteButton(isFavorite)
                 } else {
                     Log.d("TAG", "Response body is null")
                     Toast.makeText(this@MusicActivity, "Không có dữ liệu bài hát", Toast.LENGTH_SHORT).show()
@@ -356,14 +392,13 @@ class MusicActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<Data?>, t: Throwable) {
-                // Nếu cuộc gọi API thất bại thì phương thức này được thực thi
                 Log.d("TAG", "onFailure: ${t.message}")
                 Toast.makeText(this@MusicActivity, "Lỗi load dữ liệu", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
-    private fun checkIfFavorite(trackId: Long): Boolean {
+        private fun checkIfFavorite(trackId: Long): Boolean {
         // Lấy thông tin người dùng từ SharedPreferences
         val sharedPref = getSharedPreferences("user_data", Context.MODE_PRIVATE)
         val userIDString = sharedPref.getString("userID", null)

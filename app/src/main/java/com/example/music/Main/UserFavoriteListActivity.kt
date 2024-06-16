@@ -160,8 +160,12 @@ class UserFavoriteListActivity : AppCompatActivity() {
                                 override fun onItemClick(data: Data) {
                                     // Mở giao diện nhạc của bài hát được nhấp
                                     val intent = Intent(this@UserFavoriteListActivity, MusicActivity::class.java)
-                                    intent.putExtra("trackId", data.id.toString()
-                                    ) // Truyền ID của bài hát qua intent
+                                    intent.putExtra("trackId", data.id.toString()) // Truyền ID của bài hát qua intent
+                                    startActivity(intent)
+
+                                    // Truyền danh sách yêu thích qua intent
+                                    val trackIds = trackDetailsList.map { it.id }.toLongArray()
+                                    intent.putExtra("favoriteTrackIds", trackIds)
                                     startActivity(intent)
                                 }
                             }

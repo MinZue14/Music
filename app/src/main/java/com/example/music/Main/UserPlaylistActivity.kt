@@ -162,6 +162,12 @@ class UserPlaylistActivity : AppCompatActivity() {
                                     intent.putExtra("trackId", data.id.toString()
                                     ) // Truyền ID của bài hát qua intent
                                     startActivity(intent)
+
+                                    // Truyền danh sách yêu thích qua intent
+                                    val trackIds = trackDetailsList.map { it.id }.toLongArray()
+                                    intent.putExtra("playlistTrackIds", trackIds)
+                                    startActivity(intent)
+
                                 }
                             }
 
