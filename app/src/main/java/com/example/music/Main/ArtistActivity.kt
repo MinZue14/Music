@@ -9,6 +9,7 @@ import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.Adapter.ArtistAdapter
@@ -33,6 +34,7 @@ class ArtistActivity : AppCompatActivity() {
     lateinit var binding: ActivityArtistBinding
     lateinit var sharedPref: SharedPreferences
     private var dataList: List<Data> = listOf()
+    var nameArtist: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -126,7 +128,6 @@ class ArtistActivity : AppCompatActivity() {
         if (!artistID.isNullOrEmpty()) {
             val artistIDLong = artistID.toLong()
             val retrofitData = retrofitBuilder.getArtistDetail(artistIDLong)
-
             retrofitData.enqueue(object : Callback<Artist?> {
                 override fun onResponse(call: Call<Artist?>, response: Response<Artist?>) {
                     if (response.isSuccessful) {
@@ -134,31 +135,51 @@ class ArtistActivity : AppCompatActivity() {
                         if (artist != null) {
 
                             // Hiển thị giao diện ca si từ dữ liệu API
-                            binding.artistName.text = artist.name
+                            nameArtist = artist.name
+                            binding.artistName.text = nameArtist
                             Picasso.get().load(artist.picture_medium).into(binding.artistImage)
 
-                            // Khởi tạo RecyclerView và Adapter
-                            val trackList = findViewById<RecyclerView>(R.id.trackList)
-                            val adapter = ArtistAdapter(this@ArtistActivity, dataList)
+                            val retrofitData1 = retrofitBuilder.getData("$nameArtist")
+                            retrofitData1.enqueue(object : Callback<MyData?> {
+                                override fun onResponse(p0: Call<MyData?>, p1: Response<MyData?>) {
+                                    // Nếu cuộc gọi API thành công thì phương thức này được thực thi
+                                    val dataList = p1.body()?.data!!
 
-                            // Thiết lập LayoutManager cho RecyclerView
-                            trackList.layoutManager = LinearLayoutManager(this@ArtistActivity, LinearLayoutManager.HORIZONTAL, false)
+                                    // Khởi tạo RecyclerView và Adapter
+                                    val trackList = findViewById<RecyclerView>(R.id.trackList)
+                                    val adapter = TrackAdapter.trackListAdapter(this@ArtistActivity, dataList)
 
-                            // Thiết lập Adapter cho RecyclerView
-                            trackList.adapter = adapter
+                                    // Thiết lập LayoutManager cho RecyclerView
+                                    trackList.layoutManager =
+                                        LinearLayoutManager(this@ArtistActivity, LinearLayoutManager.VERTICAL, false)
 
-                            // Thiết lập listener cho adapter
-                            adapter.onItemClickListener = object : ArtistAdapter.OnArtistClickListener{
-                                override fun onItemClick(data: Data) {
-                                    // Mở giao diện nhạc của bài hát được nhấp
-                                    val intent = Intent(this@ArtistActivity, MusicActivity::class.java)
-                                    intent.putExtra("trackId", data.id.toString()
-                                    ) // Truyền ID của bài hát qua intent
-                                    startActivity(intent)
+                                    // Thiết lập Adapter cho RecyclerView
+                                    trackList.adapter = adapter
+
+                                    // Thiết lập listener cho adapter
+                                    adapter.onItemClickListener =
+                                        object : TrackAdapter.trackListAdapter.OnTrackClickListener {
+                                            override fun onItemClick(data: Data) {
+                                                // Mở giao diện nhạc của bài hát được nhấp
+                                                val intent = Intent(this@ArtistActivity, MusicActivity::class.java)
+                                                intent.putExtra(
+                                                    "trackId",
+                                                    data.id.toString()
+                                                ) // Truyền ID của bài hát qua intent
+                                                startActivity(intent)
+                                            }
+                                        }
+
+                                    Log.d("TAG", "onResponse: " + p1.body())
                                 }
-                            }
 
-                            Log.d("TAG", "Artist Name: ${artist.name}")
+
+                                override fun onFailure(p0: Call<MyData?>, p1: Throwable) {
+//                If the Api call is a failure then this method is executed
+                                    Log.d("TAG", "onResponse: " + p1.message)
+                                }
+
+                            })
                         } else {
                             Log.d("TAG", "No artist data received")
                         }
@@ -172,8 +193,12 @@ class ArtistActivity : AppCompatActivity() {
                     Log.d("TAG", "onFailure: ${t.message}")
                 }
             })
+
+
+
         } else {
             Log.d("TAG", "Artist ID is null or empty")
         }
+
     }
 }
