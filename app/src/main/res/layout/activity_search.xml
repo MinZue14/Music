@@ -73,12 +73,20 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/artistList_"
                         android:orientation="horizontal"/>
+                    <TextView
+                        android:id="@+id/textViewNoData1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Không có dữ liệu"
+                        android:textSize="18sp"
+                        android:gravity="center"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <!--list album-->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="720dp"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="20sp">
                     <TextView
@@ -94,6 +102,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal" />
+                    <TextView
+                        android:id="@+id/textViewNoData2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Không có dữ liệu"
+                        android:textSize="18sp"
+                        android:gravity="center"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <!--list nhạc-->
@@ -114,11 +130,15 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/trackList_"
                         android:orientation="horizontal"/>
+                    <TextView
+                        android:id="@+id/textViewNoData3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Không có dữ liệu"
+                        android:textSize="18sp"
+                        android:gravity="center"
+                        android:visibility="gone" />
                 </LinearLayout>
-
-                <!--list album 1-->
-
-                <!--list nhạc 1-->
 
                 <!-- END TRANG-->
                 <LinearLayout

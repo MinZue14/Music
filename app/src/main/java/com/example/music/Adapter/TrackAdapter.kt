@@ -266,7 +266,6 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
                 filteredDataList.clear()
                 filteredDataList.addAll(results?.values as List<Data>)
                 notifyDataSetChanged()
-
             }
         }
 
@@ -281,13 +280,11 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
         }
 
         override fun getItemCount(): Int {
-            return filteredDataList.size
-//            return minOf(10, dataList.size)
+//            return filteredDataList.size
+            return minOf(10, filteredDataList.size)
         }
 
         override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
-
-
             val currentData = filteredDataList[position]
 
             holder.albumName.text = currentData.album.title
@@ -327,6 +324,61 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
         // Biến để lưu trữ listener của sự kiện click
         var onItemClickListener: OnTrackClickListener? = null
 
+        // Khởi tạo một HashSet để lưu trữ các ID của bài hát đã xuất hiện
+        private val trackIds = HashSet<Long>()
+
+        // Danh sách dữ liệu đã lọc, mỗi bài hát chỉ xuất hiện một lần
+        private val filteredDataList = ArrayList<Data>()
+        private var dataListFull: List<Data> = ArrayList(dataList)
+
+        init {
+            // Lọc dữ liệu khi khởi tạo Adapter
+            filterData()
+        }
+
+        // Khai báo Filter để thực hiện việc lọc dữ liệu
+        private val slideFilter = object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val filteredList = ArrayList<Data>()
+                val trackIds = HashSet<Long>()
+
+                if (constraint == null || constraint.isEmpty()) {
+                    for (item in dataListFull) {
+                        if (!trackIds.contains(item.id)) {
+                            filteredList.add(item)
+                            trackIds.add(item.id)
+                        }
+                    }
+                } else {
+                    val filterPattern = constraint.toString().lowercase(Locale.getDefault()).trim()
+
+                    for (item in dataListFull) {
+                        val trackTitleLowercase = item.title.lowercase(Locale.getDefault())
+
+                        if (trackTitleLowercase.contains(filterPattern)) {
+                            filteredList.add(item)
+                        }
+                    }
+                }
+
+                val results = FilterResults()
+                results.values = filteredList
+                return results
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                filteredDataList.clear()
+                results?.values?.let {
+                    filteredDataList.addAll(it as List<Data>)
+                }
+                notifyDataSetChanged()
+            }
+        }
+
+        override fun getFilter(): Filter {
+            return slideFilter
+        }
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): trackListViewHolder {
             val itemView =
                 LayoutInflater.from(context).inflate(R.layout.layout_list_track, parent, false)
@@ -334,42 +386,11 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
         }
 
         override fun getItemCount(): Int {
-            return minOf(10, dataList.size)
-
+            return minOf(10, filteredDataList.size)
         }
-        private var dataListFull: List<Data> = ArrayList(dataList)
-        private val trackFilter: Filter = object : Filter() {
-            override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val filteredList = ArrayList<Data>()
-                if (constraint == null || constraint.isEmpty()) {
-                    filteredList.addAll(dataListFull)
-                } else {
-                    val filterPattern = constraint.toString().lowercase(Locale.getDefault()).trim()
-                    for (item in dataListFull) {
-                        if (item.title.lowercase(Locale.getDefault()).contains(filterPattern) ||
-                            item.artist.name.lowercase(Locale.getDefault()).contains(filterPattern)
-                        ) {
-                            filteredList.add(item)
-                        }
-                    }
-                }
-                val results = FilterResults()
-                results.values = filteredList
-                return results
-            }
-
-            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                dataList = results?.values as List<Data>
-                notifyDataSetChanged()
-            }
-        }
-        override fun getFilter(): Filter {
-            return trackFilter
-        }
-
 
         override fun onBindViewHolder(holder: trackListViewHolder, position: Int) {
-            val currentData = dataList[position]
+            val currentData = filteredDataList[position]
 
             holder.trackName.text = currentData.title
             holder.trackArtist.text = currentData.artist.name
@@ -510,6 +531,15 @@ class TrackAdapter(var context:Activity, var dataList: List<Data>)
         private fun isTrackInPlaylist(userID: Long, trackID: Long): Boolean {
             val dbManager1 = DatabaseUserPlaylist(context)
             return dbManager1.isTrackInPlaylist(userID, trackID)
+        }
+        // Phương thức này được sử dụng để lọc dữ liệu, chỉ lấy mỗi album 1 lần
+        private fun filterData() {
+            for (data in dataList) {
+                if (!trackIds.contains(data.id)) {
+                    filteredDataList.add(data)
+                    trackIds.add(data.id)
+                }
+            }
         }
 
         class trackListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
